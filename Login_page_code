@@ -12,6 +12,7 @@ def string_finder(string_to_find, list_of_strings):
 #Note 3 (technical): usernames and passwords stored as text files, depending on implementation might need a different file type (possible rewriting)
 #Note 4: no username/password security (update if time allows and after full implementation of login page)
 #Note 6: currently inputs are cancelled by typing "x", this will be superceded by a button in full implementation (remove)
+#Note 9: code most likely breaks if username/password file does not exist (this will possibly cease to be an issue at full implementation, else add error handling)
 def login():
     user_username = input("Enter your username (X to cancel):\n")
     user_found = False
@@ -63,7 +64,17 @@ def create_account():
                 print("Error- that username is already in use.")
                 username_is_valid = False
     if username_is_valid == True:
-        choose_password()
+        new_username = new_username + "\n"
+        chosen_password = choose_password()
+        if chosen_password:
+            chosen_password = chosen_password + "\n"
+            print("Account successfully generated!")
+            with open("login_usernames.txt", "a") as file:
+                file.write(new_username)
+            with open("login_passwords.txt", "a") as file:
+                file.write(chosen_password)
+        return
+
     else:
         create_account()
 
@@ -72,7 +83,7 @@ def create_account():
 def choose_password():
     new_password = input("Enter new password (or X to cancel):\n")
     if new_password == "x" or new_password == "X":
-        return
+        return None
     password_is_valid = True
     if len(new_password) < 8:
         print("Error: password must contain at least 8 characters.")
@@ -109,7 +120,7 @@ def choose_password():
     if password_is_valid:
         confirm_password = input("Confirm password:\n")
         if new_password == confirm_password:
-            print("Account successfully generated!")
+            return new_password
         else:
             print("Error- passwords do not match.")
             choose_password()
@@ -133,3 +144,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+#Note 8 (technical): No error handling implemented (should implement at some point later on)
