@@ -80,6 +80,7 @@ def create_account():
 
 #Function for choosing a password (called as part of create_account)
 #Note 6
+#Note 10: currently no way for users to change password (implement)
 def choose_password():
     new_password = input("Enter new password (or X to cancel):\n")
     if new_password == "x" or new_password == "X":
