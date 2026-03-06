@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"  href="{{ url_for('static', filename = 'style.css') }}">
+    <title></title>
+</head>
+
+
+<div class = "window">
+    <h1 class = "logo">Zero Hero</h1>
+
+    <div class = "buttons">
+        <a href ="{{ url_for('register') }}" class="toggleButton">Register</a>
+        <a href ="{{ url_for('login') }}" class="toggleButton.active" >Sign In</a>
+    </div>
+
+    <form class="formWindow" method = "POST">
+        <input type="text" name="usernameEmail" placeholder="Username/Email" required>
+        <input type="text" name="password" placeholder="Password" required>
+        <button class="submitButton">Sign In</button>
+    </form>
+</div>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"  href="{{ url_for('static', filename = 'style.css') }}">
+    <title>Title</title>
+</head>
+<div class="container centralContainer">
+    <header class = "userStats">
+        <h1 class = "logo">Zero Hero</h1>
+        <div class = "stats">
+            <span>Welcome, {{ user.username }}</span>
+            <span>You have {{ user.points }} points</span>
+        </div>
+    </header>
+
+    <section class="travelLoggingForm">
+        <h2>Log Your Travel</h2>
+        <form class = "formWindow" method = "POST">
+            <label>Transport Type:</label>
+            <select name="transportType" id="transportType">
+                <option value="" disabled selected>Select transport type...</option>
+                {% for transport in transportTypes%}
+                    <option value="{{ transport.id }}">{{ transport.transport }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Distance Travelled</label>
+            <div>
+                <input type="number" name="distance" placeholder="Distance Travelled...">
+                <select name="milesKM">
+                    <option value="km">KM</option>
+                    <option value="miles">Miles</option>
+                </select>
+            </div>
+
+            <button class="submitButton">Submit Travel</button>
+        </form>
+    </section>
+
+    <nav class="bottomNav">
+        <a href = "{{ url_for('travelLogging') }}" class="navButton.active">Travel Logging</a>
+    </nav>
+</div>
+</html>

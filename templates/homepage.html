@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"  href="{{ url_for('static', filename = 'style.css') }}">
+    <title>Title</title>
+</head>
+
+<body>
+    <div class="window">
+        <div class = "header">
+            <h1 class = "logo">Zero Hero</h1>
+            {% if not session.userID %}
+                <a href = "{{ url_for('login') }}" class="submitButton">Register/Sign In</a>
+            {% else %}
+                <a href = "{{ url_for('logout') }}" class="submitButton"> Log Out</a>
+            {% endif %}
+        </div>
+
+        {% if user %}
+        <div class = "userStatsHome">
+            <span>Points: {{ user.points }}</span>
+            <span>Login Streak: {{ user.streak }}</span>
+        </div>
+        {% else %}
+            <span>Log in to see how many points you have.</span>
+        {% endif %}
+
+        <div class="treeImages">
+            <p>Tree Image (Will go here in the coming days)</p>
+        </div>
+
+        <nav class="footerNav">
+            {% if session.userID %}
+                <a href = "{{ url_for('travelLogging') }}" class="navButton">Travel Logging</a>
+            {% else %}
+                <a href = "{{ url_for('login') }}" class="navButton">Travel Logging (Log In First)</a>
+            {% endif %}
+        </nav>
+    </div>
+</body>
+</html>

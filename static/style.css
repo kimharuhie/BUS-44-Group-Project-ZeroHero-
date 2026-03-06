@@ -1,0 +1,85 @@
+body{
+    background-color: lightskyblue;
+    font-family: "Droid Sans", serif;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.window{
+    width:100%;
+    margin:0 auto;
+    background-color: seashell;
+    padding:20px;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo{
+    color: forestgreen;
+    text-align: left;
+    font-size:36px;
+}
+
+.formWindow{
+    display:flex;
+    flex-direction: column;
+    align-items:left;
+    gap: 20px;
+}
+
+input, select{
+    max-width: 300px;
+}
+
+.buttons{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.toggleButton{
+    border:none;
+    background-color: lightgreen;
+    color: black;
+    text-align:center;
+    text-decoration: none;
+}
+.toggleButton\.active{
+    background: darkgreen;
+}
+
+.submitButton{
+    background: cadetblue;
+    color:black;
+}
+
+.footerNav{
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    gap:10px;
+}
+.navButton{
+    flex:1;
+    background: orange;
+    color:black;
+    border:none;
+    font-size:20px;
+    text-align: center;
+    text-decoration: none;
+}
+.navButton\.active{
+    background: orangered;
+}
+
+.userStatsHome{
+    display: flex;
+    justify-content: space-around;
+    font-size:14px;
+    margin-bottom: 20px;
+}
