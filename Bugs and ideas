@@ -1,0 +1,46 @@
+This file is designed to store any bugs/comments/ideas etc related to the code, UI design etc
+It should NOT be referenced or used in the code
+Update this file whenever a new bug/idea is discovered/though of/resolved, include the date for bugs, when a bug was fixed, and UI errors
+Do not delete bugs when they are resolved or ideas that are scrapped; they could be evidence later on (mark as resolved/scrapped instead)
+
+------------------------------------------------------
+Ideas and features that could/should/must be implemented
+------------------------------------------------------
+Name: General UI improvements
+Description: UI needs some tweaks e.g. adding the tree icon (this is a job for late on in sprint 2 once most other stuff is finished)
+Status: Undiscussed
+
+Name: User security
+Description: Should include some basic security (e.g. password hashing)
+Status: Undiscussed
+------------------------------------------------------
+Bugs
+------------------------------------------------------
+Name: Distance travelled variable type (07/03)
+Description: while submitting a travel distance, the user should be able to input a float rather than being restricted to an integer
+Status: Unresolved
+
+Name: Travel logging redirect failure (07/03)
+Description: Submitting a travel log should redirect to the home page (or itself, and add a button to stop logging travel)
+Status: Unresolved
+------------------------------------------------------
+UI errors
+------------------------------------------------------
+Name: Register/sign in buttons (07/03)
+Description: register/sign in buttons on the register and sign in pages could be redone to look nicer; they are quite small and close together currently
+Status: To do
+
+Name: Login failure message (07/03)
+Description: a failed login attempt should display a flash message e.g. "Your username or password was incorrect"
+Status: To do
+
+Name: Password hiding (07/03)
+Description: a password should be hidden while typing it in by the small dots websites use
+Status: To do
+
+Name: Confirm password (07/03)
+Description: on the register page, add a confirm password box
+Status: To do
+------------------------------------------------------
+Misc
+------------------------------------------------------
