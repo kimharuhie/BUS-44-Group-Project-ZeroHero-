@@ -83,3 +83,17 @@ input, select{
     font-size:14px;
     margin-bottom: 20px;
 }
+
+.flash{
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.flash.success{
+    color:darkgreen;
+
+}
+.flash.error{
+    color:crimson;
+}

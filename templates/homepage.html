@@ -9,13 +9,20 @@
 <body>
     <div class="window">
         <div class = "header">
-            <h1 class = "logo">Zero Hero</h1>
+            <a class = "logo" href="{{ url_for('homepage') }}">Zero Hero</a>
             {% if not session.userID %}
                 <a href = "{{ url_for('login') }}" class="submitButton">Register/Sign In</a>
             {% else %}
                 <a href = "{{ url_for('logout') }}" class="submitButton"> Log Out</a>
             {% endif %}
         </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{category}}">{{message}}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
         {% if user %}
         <div class = "userStatsHome">

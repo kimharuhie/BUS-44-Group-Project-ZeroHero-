@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
-app.config['SECRET_KEY']='super secret key'
+app.config['SECRET_KEY']='zerohero'
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -61,7 +61,7 @@ with app.app_context():
 
 
 @app.route('/')
-def homepage():  # put application's code here
+def homepage():
     if 'userID' in session:
         user = User.query.get(session['userID'])
     else:
@@ -82,53 +82,66 @@ def travelLogging():
     transportTypes = TypesOfTransport.query.all()
 
     if len(transportTypes) == 0:
-        added = addTransport()
+        addTransport()
         transportTypes = TypesOfTransport.query.all()
-        print(len(transportTypes))
 
     if request.method == 'POST':
-        try:
-            transportType = request.form.get('transportType')
-            distance = float(request.form.get('distance'))
-            milesKM = request.form.get('milesKM')
+        journeyAction = request.form.get('journeyAction')
+        print(journeyAction)
 
-            if not transportType or not distance or not milesKM:
-                flash('Fields cannot be left empty.')
-                return render_template('travelLogging.html', user=user)
+        if journeyAction == 'Add':
+            try:
+                transportType = request.form.get('transportType')
+                distance = float(request.form.get('distance'))
+                milesKM = request.form.get('milesKM')
 
-            if milesKM == 'miles':
-                distanceKM = distance * 1.609344
+                if not transportType or not distance:
+                    flash('Fields cannot be left empty.', 'error')
 
+                if milesKM == 'miles':
+                    distanceKM = distance * 1.609344
+                else:
+                    distanceKM = distance
+
+                transport = TypesOfTransport.query.get(transportType)
+
+                if transport:
+                    totalCarbonUsage = distanceKM * transport.carbonUse
+                    transportName = transport.transport
+
+                    if 'currentJourney' not in session:
+                        session['currentJourney'] = []
+                
+                    session['currentJourney'].append({              
+                        'transport': transportName,
+                        'distance': distanceKM,
+                        'carbonUse': totalCarbonUsage,
+                        'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    })
+                    session.modified = True
+                    flash(f"Travel segment added: {transportName} for {distanceKM} km.")
+            except Exception as e:
+                flash(f'Error logging journey {str(e)}', 'error')
+
+        elif journeyAction == 'Submit Journey':
+            fullJourney = session.pop('currentJourney', [])
+            if not fullJourney:
+                flash('No travel added!', 'error')
             else:
-                distanceKM = distance
-
-            transport = TypesOfTransport.query.get(transportType)
-            if transport:
-                totalCarbonUsage = distanceKM * transport.carbonUse
-                transportName = transport.transport
-
-
+                totalCarbonUsage = sum(seg['carbonUse']for seg in fullJourney)
                 if 'journeys' not in session:
                     session['journeys'] = []
 
-                journey={
+                session['journeys'].append({
                     'transport': transportName,
                     'distance': distanceKM,
                     'carbonUse': totalCarbonUsage,
-                    'date':datetime.now()
-                }
-                session['journeys'].append(journey)
+                    'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                })
                 session.modified = True
-                print("successfully logged")
-                print(journey)
-                flash(f"Journey logged successfully! You used {totalCarbonUsage} kg of C02")
-        except ValueError:
-            flash('Please enter a valid distance', 'error')
-        except:
-            flash(f'Error logging journey: {str(Exception)}', 'error')
-            db.session.rollback()
+                flash(f"Journey logged successfully! You used {totalCarbonUsage} kg of C02", 'success')         
 
-    return render_template('travelLogging.html', user=user, transportTypes=transportTypes, totalCarbonUsage=totalCarbonUsage, transportName=transportName, distance=distanceKM)
+    return render_template('travelLogging.html', user=user, transportTypes=transportTypes, totalCarbonUsage=totalCarbonUsage, transportName=transportName, distance=distanceKM, currentJourney=session.get('currentJourney', []))
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -139,20 +152,23 @@ def register():
         password = request.form['password']
         if len(password) != 8:
             flash('Passwords must be 8 characters long.','error')
+            return render_template('register.html')
+        
         hashedPassword = generate_password_hash(password)
 
         existingUser = User.query.filter((User.username == username)|(User.email == email)).first()
         if existingUser:
             flash("Username/email already exists.", 'error')
+            return render_template('register.html')
         newUser = User(username = username, email = email, password = hashedPassword)
-
         try:
             db.session.add(newUser)
             db.session.commit()
+            flash(f'Welcome {username}. You have been successfully registered! Please login to start using ZeroHero.', 'success')
             return redirect(url_for('login'))
-        except:
+        except Exception as e:
             db.session.rollback()
-            flash(f'Error creating user: {str(Exception)}', 'error')
+            flash(f'Error creating user: {str(e)}', 'error')
     return render_template('register.html')
 
 
@@ -160,7 +176,6 @@ def register():
 def login():
     if 'attempts' not in session:
         session['attempts'] = 0
-
     if request.method == 'POST':
         usernameEmail = request.form['usernameEmail']
         password = request.form['password']
@@ -177,12 +192,14 @@ def login():
             flash(f"Incorrect username or password, you have {5-session['attempts']} attempts remaining.",'error')
     return render_template('login.html')
 
+
 @app.route('/logout')
 def logout():
     session.pop('userID', None)
     session.pop('attempts', None)
-    return redirect(url_for('homepage'))
+    flash("You have been logged out. See you soon!")
+    return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5555)

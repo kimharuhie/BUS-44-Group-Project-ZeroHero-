@@ -8,8 +8,7 @@
 
 
 <div class = "window">
-    <h1 class = "logo">Zero Hero</h1>
-
+    <a class = "logo" href="{{ url_for('homepage') }}">Zero Hero</a>
     <div class = "buttons">
         <a href ="{{ url_for('register') }}" class="toggleButton">Register</a>
         <a href ="{{ url_for('login') }}" class="toggleButton.active" >Sign In</a>
@@ -19,5 +18,12 @@
         <input type="text" name="usernameEmail" placeholder="Username/Email" required>
         <input type="text" name="password" placeholder="Password" required>
         <button class="submitButton">Sign In</button>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{category}}">{{message}}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </form>
 </div>

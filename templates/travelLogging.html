@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet"  href="{{ url_for('static', filename = 'style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}">
     <title>Title</title>
 </head>
+
+
 <div class="container centralContainer">
     <header class = "userStats">
-        <h1 class = "logo">Zero Hero</h1>
+        <a class = "logo" href="{{ url_for('homepage') }}">Zero Hero</a>
         <div class = "stats">
             <span>Welcome, {{ user.username }}</span>
             <span>You have {{ user.points }} points</span>
@@ -27,19 +29,37 @@
 
             <label>Distance Travelled</label>
             <div>
-                <input type="number" name="distance" placeholder="Distance Travelled...">
+                <input type="number" step="any" name="distance" placeholder="Distance Travelled...">
                 <select name="milesKM">
                     <option value="km">KM</option>
                     <option value="miles">Miles</option>
                 </select>
             </div>
+            <div>
+                <button name = 'journeyAction' value = 'Add' class="submitButton">Add to Journey</button>                
+                {% if currentJourney %}
+                    <h3>Current Journey: </h3>
+                    {% for seg in currentJourney %}
+                        <p> {{seg.transport}} - {{seg.distance}}km - {{seg.carbonUse}}kg C02</p>
+                    {%endfor%}
+                {% endif %}
 
-            <button class="submitButton">Submit Travel</button>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash {{category}}">{{message}}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <button name ='journeyAction' value='Submit Journey' class="submitButton">Submit Full Journey</button>
+            </div>
+
         </form>
     </section>
-
     <nav class="bottomNav">
         <a href = "{{ url_for('travelLogging') }}" class="navButton.active">Travel Logging</a>
     </nav>
 </div>
+
 </html>
