@@ -18,7 +18,7 @@ Bugs
 ------------------------------------------------------
 Name: Distance travelled variable type (07/03)
 Description: while submitting a travel distance, the user should be able to input a float rather than being restricted to an integer
-Status: Unresolved
+Status: Resolved (10/03)
 
 Name: Travel logging redirect failure (07/03)
 Description: Submitting a travel log should redirect to the home page (or itself, and add a button to stop logging travel)
