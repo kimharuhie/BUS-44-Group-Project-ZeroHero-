@@ -1,4 +1,4 @@
-#settings for an extension, please ignore
+"_comment":"settings for an extension, they accidentally got commited. please ignore"
 {
     "vscode-pets.petSize": "medium",
     "vscode-pets.theme": "castle",
