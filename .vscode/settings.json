@@ -1,3 +1,4 @@
+#settings for an extension, please ignore
 {
     "vscode-pets.petSize": "medium",
     "vscode-pets.theme": "castle",
