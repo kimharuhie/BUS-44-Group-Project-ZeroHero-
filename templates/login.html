@@ -3,21 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet"  href="{{ url_for('static', filename = 'style.css') }}">
-    <title></title>
+    <title>Sign In</title>
 </head>
 
 
-<div class = "window">
-    <a class = "logo" href="{{ url_for('homepage') }}">Zero Hero</a>
-    <div class = "buttons">
-        <a href ="{{ url_for('register') }}" class="toggleButton">Register</a>
-        <a href ="{{ url_for('login') }}" class="toggleButton.active" >Sign In</a>
+<div class = "loginWindow">
+    <a class = "loginLogo" href="{{ url_for('homepage') }}">ZeroHero</a>
+    <div class = "toggles">
+        <a href ="{{ url_for('register') }}">Register</a>
+        <a href ="{{ url_for('login') }}" class="active" >Sign In</a>
     </div>
 
-    <form class="formWindow" method = "POST">
-        <input type="text" name="usernameEmail" placeholder="Username/Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+    <form method = "POST">
+        <div class="field">
+            <input type="text" name="usernameEmail" placeholder="Username/Email" required>
+        </div>
+        <div class="field">
+            <input type="password" name="password" id ="password" placeholder="Password" required>
+            <label class="showPassword">
+                <input type="checkbox" onclick="hideShow()">Show/Hide Password
+            </label>
+        </div>     
+
         <button class="submitButton">Sign In</button>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -26,4 +35,16 @@
             {% endif %}
         {% endwith %}
     </form>
+
+    <script>
+    function hideShow(){
+        var password = document.getElementById("password")
+        if (password.type === "password"){
+            password.type = 'text';
+        }else{
+            password.type = 'password';
+        }
+    }
+    </script>
 </div>
+</html>

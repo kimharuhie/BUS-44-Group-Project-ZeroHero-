@@ -7,15 +7,25 @@
 </head>
 
 <body>
-    <div class="window">
-        <div class = "header">
-            <a class = "logo" href="{{ url_for('homepage') }}">Zero Hero</a>
-            {% if not session.userID %}
-                <a href = "{{ url_for('login') }}" class="submitButton">Register/Sign In</a>
-            {% else %}
-                <a href = "{{ url_for('logout') }}" class="submitButton"> Log Out</a>
-            {% endif %}
-        </div>
+    <div>
+        <header>
+             <a class = "homeLogo" href="{{ url_for('homepage') }}">ZeroHero</a>
+            <div class = "userStats">
+                {% if user %}
+                    <span>Welcome, {{ user.username }}</span>
+                    <span>You have {{ user.points }} points</span>
+                    <span>Daily Streak: {{ user.streak }}</span>
+                {% else %}
+                    <span>Sign/Register to see how many points you have!</span>
+                {% endif %}
+                {% if not session.userID %}
+                    <a href = "{{ url_for('login') }}" class="button">Register/Sign In</a>
+                {% else %}
+                    <a href = "{{ url_for('logout') }}" class="button">Log Out</a>
+                {% endif %}
+            </div>          
+        </header>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -24,25 +34,19 @@
             {% endif %}
         {% endwith %}
 
-        {% if user %}
-        <div class = "userStatsHome">
-            <span>Points: {{ user.points }}</span>
-            <span>Login Streak: {{ user.streak }}</span>
-        </div>
-        {% else %}
-            <span>Log in to see how many points you have.</span>
-        {% endif %}
-
         <div class="treeImages">
             <p>Tree Image (Will go here in the coming days)</p>
         </div>
 
-        <nav class="footerNav">
+        <nav>
             {% if session.userID %}
-                <a href = "{{ url_for('travelLogging') }}" class="navButton">Travel Logging</a>
+                <a href = "{{ url_for('travelLogging') }}" >Travel Logging</a>
             {% else %}
-                <a href = "{{ url_for('login') }}" class="navButton">Travel Logging (Log In First)</a>
+                <a href = "{{ url_for('login') }}">Travel Logging (Requires Sign In)</a>
             {% endif %}
+            <a href="#">Habit Tracking</a>
+            <a href="#">Groups and Leaderboards</a>
+            <a href="#">Information</a>
         </nav>
     </div>
 </body>

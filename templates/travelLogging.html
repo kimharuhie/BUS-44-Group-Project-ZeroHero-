@@ -6,60 +6,82 @@
     <title>Title</title>
 </head>
 
-
-<div class="container centralContainer">
-    <header class = "userStats">
-        <a class = "logo" href="{{ url_for('homepage') }}">Zero Hero</a>
-        <div class = "stats">
-            <span>Welcome, {{ user.username }}</span>
-            <span>You have {{ user.points }} points</span>
-        </div>
-    </header>
-
-    <section class="travelLoggingForm">
-        <h2>Log Your Travel</h2>
-        <form class = "formWindow" method = "POST">
-            <label>Transport Type:</label>
-            <select name="transportType" id="transportType">
-                <option value="" disabled selected>Select transport type...</option>
-                {% for transport in transportTypes%}
-                    <option value="{{ transport.id }}">{{ transport.transport }}</option>
-                {% endfor %}
-            </select>
-
-            <label>Distance Travelled</label>
-            <div>
-                <input type="number" step="any" name="distance" placeholder="Distance Travelled...">
-                <select name="milesKM">
-                    <option value="km">KM</option>
-                    <option value="miles">Miles</option>
-                </select>
-            </div>
-            <div>
-                <button name = 'journeyAction' value = 'Add' class="submitButton">Add to Journey</button>                
-                {% if currentJourney %}
-                    <h3>Current Journey: </h3>
-                    {% for seg in currentJourney %}
-                        <p> {{seg.transport}} - {{seg.distance}}km - {{seg.carbonUse}}kg C02</p>
-                    {%endfor%}
+<body>
+    <div>
+        <header>
+            <a class = "homeLogo" href="{{ url_for('homepage') }}">ZeroHero</a>
+            <div class = "userStats">
+                {% if user %}
+                    <span>Welcome, {{ user.username }}</span>
+                    <span>You have {{ user.points }} points</span>
+                    <span>Daily Streak: {{ user.streak }}</span>
+                {% else %}
+                    <span>Sign/Register to see how many points you have!</span>
                 {% endif %}
-
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="flash {{category}}">{{message}}</div>
+                {% if not session.userID %}
+                    <a href = "{{ url_for('login') }}" class="button">Register/Sign In</a>
+                {% else %}
+                    <a href = "{{ url_for('logout') }}" class="button">Log Out</a>
+                {% endif %}
+            </div>
+        </header>           
+        <main>
+        <div class="travelWindow">
+            <h2>Log Your Travel</h2>
+            <form method = "POST">
+                <div class="field">
+                    <label>Transport Type:</label>
+                    <select name="transportType" id="transportType">
+                        <option value="" disabled selected>Select transport type...</option>
+                        {% for transport in transportTypes%}
+                            <option value="{{ transport.id }}">{{ transport.transport }}</option>
                         {% endfor %}
-                    {% endif %}
-                {% endwith %}
+                    </select>
+            </div>
+            <div class="field">
+                <label>Distance Travelled</label>
+                <div class="distanceRow">
+                    <input type="number" step="any" name="distance" placeholder="Distance Travelled...">
+                    <select name="milesKM">
+                        <option value="km">KM</option>
+                        <option value="miles">Miles</option>
+                    </select>
+                </div>
+            </div>
 
+            <div class="buttonRow">
+                <button name = 'journeyAction' value = 'Add' class="submitButton">Add to Journey</button>                
                 <button name ='journeyAction' value='Submit Journey' class="submitButton">Submit Full Journey</button>
             </div>
-
-        </form>
-    </section>
-    <nav class="bottomNav">
-        <a href = "{{ url_for('travelLogging') }}" class="navButton.active">Travel Logging</a>
+            <a href name="home" class="submitButton">Return Home</a>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{category}}">{{message}}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        
+            {% if currentJourney %}
+                <div class="journeyParts"></div>
+                    <h3>Current Journey: </h3>
+                    {% for seg in currentJourney %}
+                        <span class="journeyItems"> {{seg.transport}} - {{seg.distance}}km - {{seg.carbonUse}}kg C02<br></span>
+                    {%endfor%}
+            {% endif %}
+        </div>
+        </form>       
+        </div>
+        </div>
+    </main>
+    <nav>
+        <a href = "{{ url_for('travelLogging') }}" class="active">Travel Logging</a>
+        <a href="#">Habit Tracking</a>
+        <a href="#">Groups and Leaderboards</a>
+        <a href="#">Information</a>
     </nav>
+    </div>
 </div>
+</body>
 
 </html>

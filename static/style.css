@@ -1,87 +1,94 @@
 body{
-    background-color: lightskyblue;
-    font-family: "Droid Sans", serif;
-    display: flex;
-    justify-content: center;
-    margin: 0;
-}
-
-.window{
-    width:100%;
-    margin:0 auto;
-    background-color: seashell;
-    padding:20px;
-}
-
-.header{
-    display: flex;
-    justify-content: space-between;
+    min-height: 500px;
+    display: block;
+    background-color: antiquewhite;
     align-items: center;
-    margin-bottom: 20px;
-}
-
-.logo{
-    color: forestgreen;
-    text-align: left;
-    font-size:36px;
-}
-
-.formWindow{
-    display:flex;
-    flex-direction: column;
-    align-items:left;
-    gap: 20px;
-}
-
-input, select{
-    max-width: 300px;
-}
-
-.buttons{
-    display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    font-family: "Droid Sans", serif;  
 }
-.toggleButton{
-    border:none;
+
+.loginWindow{
+    background: lightblue;
+    border-radius: 10px;
+    padding: 40px 30px;
+    width: 400px;
+    box-shadow: 0 4px 32px gray;
+}
+
+.loginLogo{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: forestgreen;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    font-size: 60px;
+}
+
+
+.toggles{
+    display: flex;
+    background:lightblue;
+    border-radius: 8px;
+    border-color: black;
+    padding: 4px;
+    margin-bottom: 15px;
+}
+
+.toggles a{
+    flex:1;
+    border-radius: 9px 0;
     background-color: lightgreen;
     color: black;
     text-align:center;
     text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3ms;
+    font-size: 20px;
 }
-.toggleButton\.active{
+
+.toggles a.active{
     background: darkgreen;
+    color: antiquewhite;
+}
+
+.field{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    margin:20px;
+    font-family: Sans-Serif;
+}
+
+.field input, select{
+    max-width: 300px;
+    border-radius: 8px;
+    color: green;
+    background: gainsboro;
+    outline: none;
+    font-size: 24px;
+}
+
+.showPassword{
+    display:flex;
+    align-items: center;
+    color: black;
+    margin-top: 10px;
 }
 
 .submitButton{
+    display: block;
+    flex:1;
+    margin:auto;
+    margin-top: 10px;
     background: cadetblue;
     color:black;
-}
-
-.footerNav{
-    margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    gap:10px;
-}
-.navButton{
-    flex:1;
-    background: orange;
-    color:black;
-    border:none;
-    font-size:20px;
-    text-align: center;
+    width:200px;
+    align-items:center;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
     text-decoration: none;
-}
-.navButton\.active{
-    background: orangered;
-}
-
-.userStatsHome{
-    display: flex;
-    justify-content: space-around;
-    font-size:14px;
-    margin-bottom: 20px;
+    font-family: sans-serif;
 }
 
 .flash{
@@ -89,6 +96,8 @@ input, select{
     margin: 10px 0;
     border-radius: 5px;
     font-weight: bold;
+    text-align: center;
+    font-family: Sans-Serif;
 }
 .flash.success{
     color:darkgreen;
@@ -97,3 +106,132 @@ input, select{
 .flash.error{
     color:crimson;
 }
+
+.homeWindow{
+    background: antiquewhite;
+    border-radius: 10px;
+    padding: 40px 30px;
+    width: 100%;
+    height: 100%;
+}
+
+header{
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    width:100%;
+    padding:15px;
+    margin-bottom: 20px;
+    background-color: antiquewhite;
+    font-family: sans-serif;
+}
+
+header .button{
+    display: block;
+    background: cadetblue;
+    color:black;
+    width:200px;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.homeLogo{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: forestgreen;
+    text-decoration: none;
+    font-size: 60px;
+}
+
+.userStats{
+    display: flex;
+    color:blue;
+    gap: 24px;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.travelWindow{
+    background-color: lightblue;
+    padding: 30px 30px;
+    width: 100%;
+    max-width:500px;
+    box-shadow: 0 4px 32px gray;
+    text-align: center;
+}
+.travelWindow h2{
+    text-align: center;
+    font-family: sans-serif;
+}
+
+.distanceRow{
+    display: flex;
+    gap: 10px;
+}
+.distanceRow input{
+    max-width: 300px;
+    border-radius: 8px;
+    color: darkgreen;
+    background: gainsboro;
+    outline: none;
+    font-size: 24px;
+}
+
+.buttonRow{
+    display: flex;
+    gap:10px;
+    margin-top: 24px;
+    justify-content: center;
+}
+
+.journeyParts{
+    margin-top: 24px;
+    width: 100%;
+    max-width: 480px;
+}
+.journeyParts h3{
+    text-align: center;
+    font-family: sans-serif;
+}
+
+nav{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    border-top: 1.5px solid #e0dbd4;
+    background: #fff;
+    font-family: sans-serif;
+}
+
+nav a{
+    flex:1;
+    border-radius: 9px 0;
+    background-color: lightgreen;
+    color: black;
+    text-align:center;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3ms;
+    font-size: 30px;
+}
+
+nav a.active
+{
+    background: darkgreen;
+    color: antiquewhite;
+}
+
+
+
+
+
