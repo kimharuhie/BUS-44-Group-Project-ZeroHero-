@@ -115,10 +115,13 @@ def travelLogging():
                         if 'currentJourney' not in session:
                             session['currentJourney'] = []
 
+                        totalCarbonUsageRounded = f"{totalCarbonUsage:.3f}"
+
                         session['currentJourney'].append({
                             'transport': transportName,
                             'distance': distanceKM,
                             'carbonUse': totalCarbonUsage,
+                            "carbonUseRounded": totalCarbonUsageRounded,
                             'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                         })
                         session.modified = True
@@ -142,7 +145,7 @@ def travelLogging():
                     'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 })
                 session.modified = True
-                flash(f"Journey logged successfully! You used {totalCarbonUsage} kg of C02", 'success')
+                flash(f"Journey logged successfully! You used {totalCarbonUsage:.3f} kg of C02", 'success')
 
         elif journeyAction == "Return Home":
             return render_template('homepage.html')
