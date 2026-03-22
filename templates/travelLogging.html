@@ -68,7 +68,7 @@
                     <div class="journeyParts"></div>
                         <h3>Current Journey: </h3>
                         {% for seg in currentJourney %}
-                            <span class="journeyItems"> {{seg.transport}} - {{seg.distance}}km - {{seg.carbonUse}}kg C02<br></span>
+                            <span class="journeyItems"> {{seg.transport}} - {{seg.distance}}km - {{seg.carbonUseRounded}}kg C02<br></span>
                         {%endfor%}
                 {% endif %}
                 </form>
