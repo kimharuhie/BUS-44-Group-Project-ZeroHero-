@@ -92,34 +92,37 @@ def travelLogging():
         if journeyAction == 'Add':
             try:
                 transportType = request.form.get('transportType')
-                distance = float(request.form.get('distance'))
+                distance_str = request.form.get('distance')
                 milesKM = request.form.get('milesKM')
 
-                if not transportType or not distance:
+                if not transportType or not distance_str:
                     flash('Fields cannot be left empty.', 'error')
 
-                if milesKM == 'miles':
-                    distanceKM = distance * 1.609344
                 else:
-                    distanceKM = distance
+                    distance = float(distance_str)
 
-                transport = TypesOfTransport.query.get(transportType)
+                    if milesKM == 'miles':
+                        distanceKM = distance * 1.609344
+                    else:
+                        distanceKM = distance
 
-                if transport:
-                    totalCarbonUsage = distanceKM * transport.carbonUse
-                    transportName = transport.transport
+                    transport = TypesOfTransport.query.get(transportType)
 
-                    if 'currentJourney' not in session:
-                        session['currentJourney'] = []
-                
-                    session['currentJourney'].append({              
-                        'transport': transportName,
-                        'distance': distanceKM,
-                        'carbonUse': totalCarbonUsage,
-                        'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    })
-                    session.modified = True
-                    flash(f"Travel segment added: {transportName} for {distanceKM} km.")
+                    if transport:
+                        totalCarbonUsage = distanceKM * transport.carbonUse
+                        transportName = transport.transport
+
+                        if 'currentJourney' not in session:
+                            session['currentJourney'] = []
+
+                        session['currentJourney'].append({
+                            'transport': transportName,
+                            'distance': distanceKM,
+                            'carbonUse': totalCarbonUsage,
+                            'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        })
+                        session.modified = True
+                        flash(f"Travel segment added: {transportName} for {distanceKM} km.")
             except Exception as e:
                 flash(f'Error logging journey {str(e)}', 'error')
 
@@ -139,10 +142,12 @@ def travelLogging():
                     'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 })
                 session.modified = True
-                flash(f"Journey logged successfully! You used {totalCarbonUsage} kg of C02", 'success')         
+                flash(f"Journey logged successfully! You used {totalCarbonUsage} kg of C02", 'success')
+
+        elif journeyAction == "Return Home":
+            return render_template('homepage.html')
 
     return render_template('travelLogging.html', user=user, transportTypes=transportTypes, totalCarbonUsage=totalCarbonUsage, transportName=transportName, distance=distanceKM, currentJourney=session.get('currentJourney', []))
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
