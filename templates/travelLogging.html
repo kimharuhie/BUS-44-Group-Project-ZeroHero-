@@ -26,54 +26,54 @@
             </div>
         </header>           
         <main>
-        <div class="travelWindow">
-            <h2>Log Your Travel</h2>
-            <form method = "POST">
-                <div class="field">
-                    <label>Transport Type:</label>
-                    <select name="transportType" id="transportType">
-                        <option value="" disabled selected>Select transport type...</option>
-                        {% for transport in transportTypes%}
-                            <option value="{{ transport.id }}">{{ transport.transport }}</option>
-                        {% endfor %}
-                    </select>
-            </div>
-            <div class="field">
-                <label>Distance Travelled</label>
-                <div class="distanceRow">
-                    <input type="number" step="any" name="distance" placeholder="Distance Travelled...">
-                    <select name="milesKM">
-                        <option value="km">KM</option>
-                        <option value="miles">Miles</option>
-                    </select>
+            <div class="travelWindow">
+                <h2>Log Your Travel</h2>
+                <form method = "POST">
+                    <div class="field">
+                        <label>Transport Type:</label>
+                        <select name="transportType" id="transportType">
+                            <option value="" disabled selected>Select transport type...</option>
+                            {% for transport in transportTypes%}
+                                <option value="{{ transport.id }}">{{ transport.transport }}</option>
+                            {% endfor %}
+                        </select>
                 </div>
-            </div>
+                <div class="field">
+                    <label>Distance Travelled</label>
+                    <div class="distanceRow">
+                        <input type="number" step="any" name="distance" placeholder="Distance Travelled...">
+                        <select name="milesKM">
+                            <option value="km">KM</option>
+                            <option value="miles">Miles</option>
+                        </select>
+                    </div>
+                </div>
 
-            <div class="buttonRow">
-                <button name = 'journeyAction' value = 'Add' class="submitButton">Add to Journey</button>                
-                <button name ='journeyAction' value='Submit Journey' class="submitButton">Submit Full Journey</button>
-            </div>
-            <a href name="home" class="submitButton">Return Home</a>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="flash {{category}}">{{message}}</div>
-                    {% endfor %}
+                <div class="buttonRow">
+                    <button name = 'journeyAction' value = 'Add' class="submitButton">Add to Journey</button>
+                    <button name ='journeyAction' value='Submit Journey' class="submitButton">Submit Full Journey</button>
+                </div>
+                <div class="buttonRow">
+                    <button name = 'journeyAction' value = 'Return Home' class="submitButton">Return Home</button>
+                </div>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash {{category}}">{{message}}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% if currentJourney %}
+                    <div class="journeyParts"></div>
+                        <h3>Current Journey: </h3>
+                        {% for seg in currentJourney %}
+                            <span class="journeyItems"> {{seg.transport}} - {{seg.distance}}km - {{seg.carbonUse}}kg C02<br></span>
+                        {%endfor%}
                 {% endif %}
-            {% endwith %}
-        
-            {% if currentJourney %}
-                <div class="journeyParts"></div>
-                    <h3>Current Journey: </h3>
-                    {% for seg in currentJourney %}
-                        <span class="journeyItems"> {{seg.transport}} - {{seg.distance}}km - {{seg.carbonUse}}kg C02<br></span>
-                    {%endfor%}
-            {% endif %}
-        </div>
-        </form>       
-        </div>
-        </div>
-    </main>
+                </form>
+            </div>
+        </main>
     <nav>
         <a href = "{{ url_for('travelLogging') }}" class="active">Travel Logging</a>
         <a href="#">Habit Tracking</a>
