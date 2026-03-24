@@ -12,7 +12,7 @@ Status: Undiscussed
 
 Name: User security
 Description: Should include some basic security (e.g. password hashing)
-Status: Undiscussed
+Status: Added (19/03)
 ------------------------------------------------------
 Bugs
 ------------------------------------------------------
@@ -22,21 +22,21 @@ Status: Resolved (10/03)
 
 Name: Travel logging redirect failure (07/03)
 Description: Submitting a travel log should redirect to the home page (or itself, and add a button to stop logging travel)
-Status: Unresolved
+Status: Resolved (22/03)
 ------------------------------------------------------
 UI errors
 ------------------------------------------------------
 Name: Register/sign in buttons (07/03)
 Description: register/sign in buttons on the register and sign in pages could be redone to look nicer; they are quite small and close together currently
-Status: To do
+Status: Resolved (19/03)
 
 Name: Login failure message (07/03)
 Description: a failed login attempt should display a flash message e.g. "Your username or password was incorrect"
-Status: To do
+Status: Resolved (19/03)
 
 Name: Password hiding (07/03)
 Description: a password should be hidden while typing it in by the small dots websites use
-Status: To do
+Status: Resolved (19/03)
 
 Name: Confirm password (07/03)
 Description: on the register page, add a confirm password box
