@@ -23,14 +23,20 @@ class TypesOfTransport(db.Model):
     transport = db.Column(db.String(80), nullable=False)
     carbonUse = db.Column(db.Float(80), nullable=False)
 
+#class TransportJourney(db.model):
+#Maybe need to add this
+#Also really need to tidy these files up at some point (naming + modularising)
+car_carbon_per_km = 0.17048
+plane_long_range_carbon_per_km = 0.19309
+
 def addTransport():
     transportList = [
-        {'transport':'Car (Petrol)', 'carbonUse': 0.17048},
+        {'transport': 'Car (Petrol)', 'carbonUse': car_carbon_per_km},
         {'transport': 'Car (Electric)', 'carbonUse': 0.0684},
         {'transport': 'Motorbike', 'carbonUse': 0.11355},
         {'transport': 'Flight (Domestic)', 'carbonUse': 0.24587},
         {'transport': 'Flight (Travelling Within Europe)', 'carbonUse': 0.15353},
-        {'transport': 'Flight (Travelling Outside of Europe)', 'carbonUse': 0.19309},
+        {'transport': 'Flight (Travelling Outside of Europe)', 'carbonUse': plane_long_range_carbon_per_km},
         {'transport': 'Ferry (Foot Passenger)', 'carbonUse': 0.01874},
         {'transport': 'Ferry (Car Passenger)', 'carbonUse': 0.12952},
         {'transport': 'Bus', 'carbonUse': 0.0965},
@@ -59,6 +65,17 @@ with app.app_context():
         addTransport()
         print(TypesOfTransport.query.count())
 
+def points_calculator(carbon_used, distance):
+    carbon_used_per_km = carbon_used/distance
+    standard_max_carbon = car_carbon_per_km
+    if distance > 1500:
+        standard_max_carbon = plane_long_range_carbon_per_km
+    elif distance > 750:
+        standard_max_carbon = (distance/750 - 1) * plane_long_range_carbon_per_km + (2 - distance/750) * car_carbon_per_km
+    carbon_saved_per_km = standard_max_carbon - carbon_used_per_km
+    carbon_saved = carbon_saved_per_km * distance
+    points = int(7.5 * carbon_saved)
+    return max(points, 0)
 
 @app.route('/')
 def homepage():
@@ -135,6 +152,9 @@ def travelLogging():
                 flash('No travel added!', 'error')
             else:
                 totalCarbonUsage = sum(seg['carbonUse']for seg in fullJourney)
+                totalDistance = sum(seg['distance']for seg in fullJourney)
+                points = points_calculator(totalCarbonUsage, totalDistance)
+
                 if 'journeys' not in session:
                     session['journeys'] = []
 
@@ -142,15 +162,32 @@ def travelLogging():
                     'transport': transportName,
                     'distance': distanceKM,
                     'carbonUse': totalCarbonUsage,
+                    'points': points,
                     'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 })
                 session.modified = True
+                flash(f"You earned {points} points!")
+                user.points += points
+                print(user.points)
+                db.session.commit()
                 flash(f"Journey logged successfully! You used {totalCarbonUsage:.3f} kg of C02", 'success')
 
         elif journeyAction == "Return Home":
-            return render_template('homepage.html')
+            return redirect(url_for('homepage'))
 
     return render_template('travelLogging.html', user=user, transportTypes=transportTypes, totalCarbonUsage=totalCarbonUsage, transportName=transportName, distance=distanceKM, currentJourney=session.get('currentJourney', []))
+
+@app.route('/habit_tracking', methods=['GET', 'POST'])
+def habit_tracking():
+    return "\"Habit tracking\" has not yet been implemented."
+
+@app.route('/groups_and_leaderboards', methods=['GET', 'POST'])
+def groups_and_leaderboards():
+    return "\"Groups and leaderboards\" has not yet been implemented."
+
+@app.route("/information", methods=["GET", "POST"])
+def information():
+    return "\"Information\" has not yet been implemented."
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
