@@ -41,12 +41,15 @@
         <nav>
             {% if session.userID %}
                 <a href = "{{ url_for('travelLogging') }}" >Travel Logging</a>
+                <a href = "{{ url_for('habit_tracking') }}" >Habit Tracking</a>
+                <a href = "{{ url_for('groups_and_leaderboards') }}" >Groups and Leaderboards</a>
+                <a href = "{{ url_for('information') }}" >Information</a>
             {% else %}
                 <a href = "{{ url_for('login') }}">Travel Logging (Requires Sign In)</a>
+                <a href = "{{ url_for('login') }}">Habit Tracking (Requires Sign In)</a>
+                <a href = "{{ url_for('login') }}">Groups and Leaderboards (Requires Sign In)</a>
+                <a href = "{{ url_for('login') }}">Information (Requires Sign In)</a>
             {% endif %}
-            <a href="#">Habit Tracking</a>
-            <a href="#">Groups and Leaderboards</a>
-            <a href="#">Information</a>
         </nav>
     </div>
 </body>
