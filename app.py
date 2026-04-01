@@ -4,48 +4,9 @@ from flask import Flask, request, url_for, render_template, redirect, session, f
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.testing.pickleable import User
 from werkzeug.security import generate_password_hash, check_password_hash
+from models import transportList, User, TypesOfTransport, app, db, car_carbon_per_km, plane_long_range_carbon_per_km
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
-app.config['SECRET_KEY']='zerohero'
-db = SQLAlchemy(app)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
-    points = db.Column(db.Integer, default=0)
-    streak = db.Column(db.Integer, default=0)
-
-class TypesOfTransport(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    transport = db.Column(db.String(80), nullable=False)
-    carbonUse = db.Column(db.Float(80), nullable=False)
-
-#class TransportJourney(db.model):
-#Maybe need to add this
-#Also really need to tidy these files up at some point (naming + modularising)
-car_carbon_per_km = 0.17048
-plane_long_range_carbon_per_km = 0.19309
-
-def addTransport():
-    transportList = [
-        {'transport': 'Car (Petrol)', 'carbonUse': car_carbon_per_km},
-        {'transport': 'Car (Electric)', 'carbonUse': 0.0684},
-        {'transport': 'Motorbike', 'carbonUse': 0.11355},
-        {'transport': 'Flight (Domestic)', 'carbonUse': 0.24587},
-        {'transport': 'Flight (Travelling Within Europe)', 'carbonUse': 0.15353},
-        {'transport': 'Flight (Travelling Outside of Europe)', 'carbonUse': plane_long_range_carbon_per_km},
-        {'transport': 'Ferry (Foot Passenger)', 'carbonUse': 0.01874},
-        {'transport': 'Ferry (Car Passenger)', 'carbonUse': 0.12952},
-        {'transport': 'Bus', 'carbonUse': 0.0965},
-        {'transport': 'Coach', 'carbonUse': 0.02733},
-        {'transport': 'Rail', 'carbonUse': 0.03549},
-        {'transport': 'Light Rail/Tram/Tube', 'carbonUse': 0.02861},
-        {'transport': 'Cycling', 'carbonUse': 0.00528},
-        {'transport': 'Walking', 'carbonUse': 0.01212},
-    ]
+def addTransport(transportList):
     addedCount = 0
     for i in transportList:
         exists = TypesOfTransport.query.filter_by(transport=i['transport']).first()
