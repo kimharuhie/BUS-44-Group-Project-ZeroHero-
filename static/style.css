@@ -1,11 +1,12 @@
 body{
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Iosevka Charon', serif;  
-    background-image: url('images/sky background.jpg');
+    background-image: url('images/sky background.png');
     background-size: cover;
+    background-position: right bottom;
     background-attachment: fixed;
     margin:0;
     padding: 0;   
@@ -70,6 +71,14 @@ body{
 .toggles button:focus{
     background: darkgreen;
     color: antiquewhite;
+}
+
+.treeImages img {
+    max-height: 80vh;
+    max-width: 100%;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
 }
 
 .field{

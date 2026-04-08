@@ -36,9 +36,9 @@
 
         <div class="treeImages">
             {%if user%}
-                <img src="{{url_for('static', filename='images/'' + tree + ''.jpg')}}">
+                <img src="{{url_for('static', filename='images/' + tree + '.png')}}">
             {%else%}
-                <img src="{{url_for('static', filename='images/large')}}">   
+                <img src="{{url_for('static', filename='images/large.png')}}">   
             {%endif%}
             
         </div>
@@ -50,10 +50,10 @@
                 <a href = "{{ url_for('groups_and_leaderboards') }}" >Groups and Leaderboards</a>
                 <a href = "{{ url_for('information') }}" >Information</a>
             {% else %}
-                <a href = "{{ url_for('login') }}">Travel Logging (Requires Sign In)</a>
-                <a href = "{{ url_for('login') }}">Tracking Progress (Requires Sign In)</a>
-                <a href = "{{ url_for('login') }}">Groups and Leaderboards (Requires Sign In)</a>
-                <a href = "{{ url_for('login') }}">Information (Requires Sign In)</a>
+                <a href = "{{ url_for('login') }}">Travel Logging <em>(Requires Sign In)</em></a>
+                <a href = "{{ url_for('login') }}">Tracking Progress <em>(Requires Sign In)</em></a>
+                <a href = "{{ url_for('login') }}">Groups and Leaderboards <em>(Requires Sign In)</em></a>
+                <a href = "{{ url_for('login') }}">Information <em>(Requires Sign In)</em></a>
             {% endif %}
         </nav>
     </div>
