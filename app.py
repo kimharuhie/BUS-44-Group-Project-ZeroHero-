@@ -19,7 +19,22 @@ def homepage():
         user = User.query.get(session['userID'])
     else:
         user = None
-    return render_template('homepage.html',user=user)
+
+    points = user.points
+    if points <= 50:
+        tree = 'seed'
+    elif 50 < points <= 100:
+        tree = 'sapling'
+    elif 100 < points <= 200:
+        tree = 'small'
+    elif 200 < points <= 300:
+        tree = 'medium'
+    elif 300 < points:
+        tree = 'large'
+    else:
+        tree = 'large'
+
+    return render_template('homepage.html',user=user, tree=tree)
 
 @app.route('/travel', methods=['GET', 'POST'])
 def travelLogging():

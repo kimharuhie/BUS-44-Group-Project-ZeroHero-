@@ -53,4 +53,17 @@
         </nav>
     </div>
 </body>
+
+<script>
+    function comparePoints(points){
+        if (points == 0 && points <= 50) return 'seed';
+        if (50 < points <= 100) return 'sapling';
+        if (100 < points <= 200) return 'small';
+        if (200< points <= 300) return 'medium';
+        return 'big';
+    }
+</script>
+
 </html>
+
+

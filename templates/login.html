@@ -21,7 +21,7 @@
         <div class="field">
             <input type="password" name="password" id ="password" placeholder="Password" required>
             <label class="showPassword">
-                <input type="checkbox" onclick="hideShow()">Show/Hide Password
+                <input type="checkbox" onclick="hideShow()">Show/Hide
             </label>
         </div>     
 
@@ -37,7 +37,7 @@
     </form>
 
     <script>
-    function hideShow(){
+    function hideShowPass(){
         var password = document.getElementById("password")
         if (password.type === "password"){
             password.type = 'text';
