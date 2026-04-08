@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -37,3 +38,9 @@ class TypesOfTransport(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     transport = db.Column(db.String(80), nullable=False)
     carbonUse = db.Column(db.Float(80), nullable=False)
+
+class PointsHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    points = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.DateTime, default=lambda: datetime.now())

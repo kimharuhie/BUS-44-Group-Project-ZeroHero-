@@ -35,34 +35,29 @@
         {% endwith %}
 
         <div class="treeImages">
-            <p>Tree Image (Will go here in the coming days)</p>
+            {%if user%}
+                <img src="{{url_for('static', filename='images/'' + tree + ''.jpg')}}">
+            {%else%}
+                <img src="{{url_for('static', filename='images/large')}}">   
+            {%endif%}
+            
         </div>
 
         <nav>
             {% if session.userID %}
                 <a href = "{{ url_for('travelLogging') }}" >Travel Logging</a>
-                <a href = "{{ url_for('habit_tracking') }}" >Habit Tracking</a>
+                <a href = "{{ url_for('progressTrack') }}" >Track Progress</a>
                 <a href = "{{ url_for('groups_and_leaderboards') }}" >Groups and Leaderboards</a>
                 <a href = "{{ url_for('information') }}" >Information</a>
             {% else %}
                 <a href = "{{ url_for('login') }}">Travel Logging (Requires Sign In)</a>
-                <a href = "{{ url_for('login') }}">Habit Tracking (Requires Sign In)</a>
+                <a href = "{{ url_for('login') }}">Tracking Progress (Requires Sign In)</a>
                 <a href = "{{ url_for('login') }}">Groups and Leaderboards (Requires Sign In)</a>
                 <a href = "{{ url_for('login') }}">Information (Requires Sign In)</a>
             {% endif %}
         </nav>
     </div>
 </body>
-
-<script>
-    function comparePoints(points){
-        if (points == 0 && points <= 50) return 'seed';
-        if (50 < points <= 100) return 'sapling';
-        if (100 < points <= 200) return 'small';
-        if (200< points <= 300) return 'medium';
-        return 'big';
-    }
-</script>
 
 </html>
 

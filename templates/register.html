@@ -22,9 +22,15 @@
             <input type="text" name="email" placeholder="Email Address" required>
         </div>
         <div class="field">
-            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="password" id="password" placeholder="Password" required>
             <label class="showPassword">
                 <input type="checkbox" onclick="hideShow()">Show/Hide Password
+            </label>            
+        </div>
+                <div class="field">
+            <input type="password" name="confirm" id="confirm" placeholder="Confirm Password" required>
+            <label class="showPassword">
+                <input type="checkbox" onclick="hideShowConfirm()">Show/Hide Password
             </label>            
         </div>
         <button class="submitButton">Register</button>
@@ -45,6 +51,14 @@
                 password.type = 'text';
             }else{
                 password.type = 'password';
+            }
+        }
+        function hideShowConfirm(){
+            var confirm_password = document.getElementById("confirm")
+            if (confirm_password.type === "password"){
+                confirm_password.type = 'text';
+            }else{
+                confirm_password.type = 'password';
             }
         }
     </script>

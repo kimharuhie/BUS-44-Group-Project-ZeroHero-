@@ -14,7 +14,7 @@ def addTransport(transportList):
     return addedCount
 
 
-def points_calculator(carbon_used, distance):
+def pointsCalculator(carbon_used, distance):
     carbon_used_per_km = carbon_used/distance
     standard_max_carbon = car_carbon_per_km
     if distance > 1500:
@@ -25,3 +25,5 @@ def points_calculator(carbon_used, distance):
     carbon_saved = carbon_saved_per_km * distance
     points = int(7.5 * carbon_saved)
     return max(points, 0)
+
+

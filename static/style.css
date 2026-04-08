@@ -4,7 +4,7 @@ body{
     align-items: center;
     justify-content: center;
     font-family: 'Iosevka Charon', serif;  
-    background-image: url('background-blue-clean-clear-53545-876943200.jpg');
+    background-image: url('images/sky background.jpg');
     background-size: cover;
     background-attachment: fixed;
     margin:0;
@@ -31,7 +31,7 @@ body{
 
 
 .toggles{
-    display: flex;
+    display: block;
     background:lightblue;
     border-radius: 8px;
     border-color: black;
@@ -215,6 +215,22 @@ main{
     text-align: center;
 }
 .travelWindow h2{
+    text-align: center;
+    font-size: 35px;
+    font-family: sans-serif;
+}
+
+
+.progressWindow{
+    background-color: lightblue;
+    padding: 30px 30px;
+    width: 100%;
+    max-width:700px;
+    justify-content: center;
+    box-shadow: 0 4px 32px gray;
+    text-align: center;
+}
+.progressWindow h2{
     text-align: center;
     font-size: 35px;
     font-family: sans-serif;

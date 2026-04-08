@@ -1,10 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from flask import Flask, request, url_for, render_template, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.testing.pickleable import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import transportList, User, TypesOfTransport, app, db, car_carbon_per_km, plane_long_range_carbon_per_km
-from functions import addTransport, points_calculator
+from models import transportList, User, TypesOfTransport, app, db, car_carbon_per_km, plane_long_range_carbon_per_km, PointsHistory
+from functions import addTransport, pointsCalculator
 
 with app.app_context():
     db.create_all()
@@ -20,18 +20,19 @@ def homepage():
     else:
         user = None
 
+    if user is None:
+        return render_template('homepage.html', user=None, tree='large')
+    
     points = user.points
-    if points <= 50:
+    if points <= 500:
         tree = 'seed'
-    elif 50 < points <= 100:
+    elif 500 < points <= 1000:
         tree = 'sapling'
-    elif 100 < points <= 200:
+    elif 1000 < points <= 2500:
         tree = 'small'
-    elif 200 < points <= 300:
+    elif 2500 < points <= 5000:
         tree = 'medium'
-    elif 300 < points:
-        tree = 'large'
-    else:
+    elif 5000 < points:
         tree = 'large'
 
     return render_template('homepage.html',user=user, tree=tree)
@@ -104,7 +105,7 @@ def travelLogging():
             else:
                 totalCarbonUsage = sum(seg['carbonUse']for seg in fullJourney)
                 totalDistance = sum(seg['distance']for seg in fullJourney)
-                points = points_calculator(totalCarbonUsage, totalDistance)
+                points = pointsCalculator(totalCarbonUsage, totalDistance)
 
                 if 'journeys' not in session:
                     session['journeys'] = []
@@ -119,7 +120,8 @@ def travelLogging():
                 session.modified = True
                 flash(f"You earned {points} points!")
                 user.points += points
-                print(user.points)
+                new_history = PointsHistory(user_id=user.id, points=points)
+                db.session.add(new_history)
                 db.session.commit()
                 flash(f"Journey logged successfully! You used {totalCarbonUsage:.3f} kg of C02", 'success')
 
@@ -128,9 +130,44 @@ def travelLogging():
 
     return render_template('travelLogging.html', user=user, transportTypes=transportTypes, totalCarbonUsage=totalCarbonUsage, transportName=transportName, distance=distanceKM, currentJourney=session.get('currentJourney', []))
 
-@app.route('/habit_tracking', methods=['GET', 'POST'])
-def habit_tracking():
-    return "\"Habit tracking\" has not yet been implemented."
+@app.route('/track_progress', methods=['GET', 'POST'])
+def progressTrack():
+    if 'userID' not in session:
+        flash('Please sign in to track your progress', 'error')
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['userID'])
+    now = datetime.now()
+
+    days = int(request.form.get('days', 7))
+
+    def getPointsByDay(days):
+        start_day = now - timedelta(days=days)
+        history = PointsHistory.query.filter(
+            PointsHistory.user_id == user.id,
+            PointsHistory.date >= start_day
+        ).all()
+
+        points_by_day = {}
+        for entry in history:
+            day = entry.date.strftime('%Y-%m-%d')
+            points_by_day[day] =  points_by_day.get(day, 0) + entry.points
+
+        labels = []
+        values = []
+        for i in range(days):
+            day = (start_day + timedelta(days=i+1)).strftime('%Y-%m-%d')
+            labels.append(day)
+            values.append(points_by_day.get(day, 0))
+
+        return labels, values
+
+    labels, values = getPointsByDay(days)
+    print("DAYS:", days)
+    print("LABELS:", labels)
+    print("VALUES:", values)
+
+    return render_template('progress.html', user=user, labels=labels, values=values, days=days)
 
 @app.route('/groups_and_leaderboards', methods=['GET', 'POST'])
 def groups_and_leaderboards():
@@ -146,8 +183,12 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        if len(password) != 8:
-            flash('Passwords must be 8 characters long.','error')
+        confirm_password = request.form['confirm']
+        if len(password) < 8:
+            flash('Passwords must be at least 8 characters long.','error')
+            return render_template('register.html')
+        if password != confirm_password:
+            flash("Passwords are not identical. Please try registering again.", "error")
             return render_template('register.html')
         
         hashedPassword = generate_password_hash(password)
@@ -164,8 +205,8 @@ def register():
             return redirect(url_for('login'))
         except Exception as e:
             db.session.rollback()
-            flash(f'Error creating user: {str(e)}', 'error')
-    return render_template('register.html')
+            flash(f"Error creating user: {str(e)}", "error")
+    return render_template("register.html")
 
 
 @app.route('/login', methods=['GET', 'POST'])

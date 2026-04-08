@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"  href="{{ url_for('static', filename = 'style.css') }}">
+    <title>Progress Tracking</title>
+</head>
+
+<header>
+    <a class = "homeLogo" href="{{ url_for('homepage') }}">ZeroHero</a>
+    <div class = "homeWelcome">
+        {% if user %}
+            <span>Welcome, {{ user.username }}</span>
+            <br>
+            <span>Points: {{ user.points }}</span>
+            <span>Daily Streak: {{ user.streak }}</span>
+        {% else %}
+            <span>Sign In/Register to Start Saving the Environment</span>
+        {% endif %}
+    </div>        
+    {% if not session.userID %}
+        <a href = "{{ url_for('login') }}" class="button">Register/Sign In</a>
+    {% else %}
+        <a href = "{{ url_for('logout') }}" class="button">Log Out</a>
+    {% endif %}
+</header> 
+
+<body>
+    <main>
+        <div class="progressWindow">
+            <h2>Track Your Progress</h2>
+            <div class = "toggles">
+                <form method="POST">
+                    <button name = "days" value="7">Past 7 Days</button>
+                    <button name = "days" value="15">Past 15 Days</button>
+                    <button name = "days" value="30">Past 30 Days</button>    
+                </form>          
+            </div> 
+            <div id = "chartData"
+                data-labels = '{{ labels | tojson }}'
+                data-values = '{{ values | tojson }}'
+                style="display: none;">
+            </div>
+            <canvas id="progressChart" style="width:100%;max-width:700px"></canvas>
+        </div>
+    
+    </main>
+        <nav>
+        <a href = "{{ url_for('travelLogging') }}">Travel Logging</a>
+        <a href="{{ url_for('progressTrack') }}" class="active">Track Progress</a>
+        <a href="#">Groups and Leaderboards</a>
+        <a href="#">Information</a>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
+    <script>
+        const chartData = document.getElementById('chartData');
+        const labels = JSON.parse(chartData.dataset.labels);
+        const values = JSON.parse(chartData.dataset.values);
+
+        new Chart("progressChart", {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Points Earned',
+                    backgroundColor: 'green',
+                    data: values
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'black'
+                        }
+                    },
+                    x: {
+                        ticks:{
+                            color: 'black'
+                        }
+                    }
+                },
+                plugins:{
+                    legend:{
+                        labels:{
+                            color:'black'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
