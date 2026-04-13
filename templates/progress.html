@@ -48,8 +48,8 @@
         <nav>
         <a href = "{{ url_for('travelLogging') }}">Travel Logging</a>
         <a href="{{ url_for('progressTrack') }}" class="active">Track Progress</a>
-        <a href="#">Groups and Leaderboards</a>
-        <a href="#">Information</a>
+        <a href="{{ url_for('leaderboard') }}">Leaderboard</a>
+        <a href="{{ url_for('information') }}">Information</a>
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>

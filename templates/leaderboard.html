@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"  href="{{ url_for('static', filename = 'style.css') }}">
+    <title>Leaderboard</title>
+</head>
+
+<header>
+    <a class = "homeLogo" href="{{ url_for('homepage') }}">ZeroHero</a>
+    <div class = "homeWelcome">
+        {% if user %}
+            <span>Welcome, {{ user.username }}</span>
+            <br>
+            <span>Points: {{ user.points }}</span>
+            <span>Daily Streak: {{ user.streak }}</span>
+        {% else %}
+            <span>Sign In/Register to Start Saving the Environment</span>
+        {% endif %}
+    </div>        
+    {% if not session.userID %}
+        <a href = "{{ url_for('login') }}" class="button">Register/Sign In</a>
+    {% else %}
+        <a href = "{{ url_for('logout') }}" class="button">Log Out</a>
+    {% endif %}
+</header> 
+
+<body>
+    <main>
+        <div class="leaderboardWindow">
+            <h2>Global Leaderboard</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{category}}">{{message}}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <p>Current Rank: {{ user_rank }}</p>
+
+            <table class="leaderboardTable">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Username</th>
+                        <th>Points</th>
+                        <th>Streak</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in all_users %}
+                        <tr {% if u.id == user.id %} class="currentUser"{%endif%}>
+                            <td>
+                                {% if loop.index == 1 %} Gold
+                                {% elif loop.index == 2 %} Silver
+                                {% elif loop.index == 3 %} Bronze
+                                {% else %}{{ loop.index }}
+                                {% endif %}
+                            </td>
+                            <td>{{ u.username }}</td>
+                            <td>{{ u.points }}</td>
+                            <td>{{ u.streak }}</td>
+                        </tr>
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <nav>
+        <a href = "{{ url_for('travelLogging') }}">Travel Logging</a>
+        <a href="{{ url_for('progressTrack') }}">Track Progress</a>
+        <a href="{{ url_for('leaderboard') }}" class="active">Leaderboard</a>
+        <a href="{{ url_for('information') }}">Information</a>       
+    </nav>
+    
+</body>
+</html>

@@ -304,6 +304,40 @@ nav a.active
 }
 
 
+.leaderboardWindow{
+    background-color: lightblue;
+    padding: 30px 30px;
+    width: 100%;
+    max-width:700px;
+    justify-content: center;
+    box-shadow: 0 4px 32px gray;
+    text-align: center;
+}
+
+.leaderboardTable{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.leaderboardTable th, .leaderboardTable td{
+    padding: 10px 15px;
+    text-align: center;
+    border-bottom: 1px solid blue;
+}
+
+.leaderboardTable th{
+    font-weight: bolder;
+    background: aquamarine;
+}
+
+.currentUser{
+    background-color: green;
+    font-weight: bold;
+}
+
+
+
 
 
 

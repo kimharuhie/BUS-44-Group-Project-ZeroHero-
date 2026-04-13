@@ -169,9 +169,22 @@ def progressTrack():
 
     return render_template('progress.html', user=user, labels=labels, values=values, days=days)
 
-@app.route('/groups_and_leaderboards', methods=['GET', 'POST'])
-def groups_and_leaderboards():
-    return "\"Groups and leaderboards\" has not yet been implemented."
+@app.route('/leaderboard', methods=['GET', 'POST'])
+def leaderboard():
+    if 'userID' not in session:
+        flash('Please sign in to see your ranking ', 'error')
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['userID'])
+    all_users = User.query.order_by(User.points.desc()).all()
+
+    user_rank = None
+    for i, u in enumerate(all_users):
+        if u.id == user.id:
+            user_rank = i + 1
+            break
+
+    return render_template('leaderboard.html', user=user, all_users=all_users, user_rank=user_rank)
 
 @app.route("/information", methods=["GET", "POST"])
 def information():

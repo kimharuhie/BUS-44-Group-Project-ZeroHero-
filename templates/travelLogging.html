@@ -76,9 +76,9 @@
         </main>
     <nav>
         <a href = "{{ url_for('travelLogging') }}" class="active">Travel Logging</a>
-        <a href="{{url_for('progressTrack')}}">Track Progress</a>
-        <a href="#">Groups and Leaderboards</a>
-        <a href="#">Information</a>
+        <a href="{{ url_for('progressTrack') }}">Track Progress</a>
+        <a href="{{ url_for('leaderboard') }}">Leaderboard</a>
+        <a href="{{ url_for('information') }}">Information</a>
     </nav>
     </div>
 </div>
