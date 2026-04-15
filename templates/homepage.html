@@ -50,10 +50,10 @@
                 <a href = "{{ url_for('leaderboard') }}" >Leaderboard</a>
                 <a href = "{{ url_for('information') }}" >Information</a>
             {% else %}
-                <a href = "{{ url_for('login') }}">Travel Logging <em>(Requires Sign In)</em></a>
-                <a href = "{{ url_for('login') }}">Track Progress <em>(Requires Sign In)</em></a>
-                <a href = "{{ url_for('login') }}">Leaderboard <em>(Requires Sign In)</em></a>
-                <a href = "{{ url_for('login') }}">Information <em>(Requires Sign In)</em></a>
+                <a href = "{{ url_for('login') }}">Travel Logging<br><em>(Requires Sign In)</em></a>
+                <a href = "{{ url_for('login') }}">Track Progress<br><em>(Requires Sign In)</em></a>
+                <a href = "{{ url_for('login') }}">Leaderboard<br><em>(Requires Sign In)</em></a>
+                <a href = "{{ url_for('login') }}">Information<br><em>(Requires Sign In)</em></a>
             {% endif %}
         </nav>
     </div>
