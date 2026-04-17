@@ -50,20 +50,55 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for u in all_users %}
-                        <tr {% if u.id == user.id %} class="currentUser"{%endif%}>
-                            <td>
-                                {% if loop.index == 1 %} Gold
-                                {% elif loop.index == 2 %} Silver
-                                {% elif loop.index == 3 %} Bronze
-                                {% else %}{{ loop.index }}
-                                {% endif %}
-                            </td>
-                            <td>{{ u.username }}</td>
-                            <td>{{ u.points }}</td>
-                            <td>{{ u.streak }}</td>
-                        </tr>
+                    {% if user_rank <= 10 %}
+                        {% for u in all_users %}
+                            {% if loop.index <= 10 %}
+                                <tr {% if u.id == user.id %} class="currentUser"{%endif%}>
+                                    <td>
+                                        {% if loop.index == 1 %} Gold
+                                        {% elif loop.index == 2 %} Silver
+                                        {% elif loop.index == 3 %} Bronze
+                                        {% else %}#{{ loop.index }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ u.username }}</td>
+                                    <td>{{ u.points }}</td>
+                                    <td>{{ u.streak }}</td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
+                    {% else %}
+                        {% for u in all_users %}
+                            {% if loop.index <= 3 %}
+                                <tr {% if u.id == user.id %} class="currentUser"{%endif%}>
+                                    <td>
+                                        {% if loop.index == 1 %} Gold
+                                        {% elif loop.index == 2 %} Silver
+                                        {% elif loop.index == 3 %} Bronze
+                                        {% else %}#{{ loop.index }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ u.username }}</td>
+                                    <td>{{ u.points }}</td>
+                                    <td>{{ u.streak }}</td>
+                                </tr>
+                            {% elif loop.index == 4 %}
+                                <tr>
+                                    <td>....</td>
+                                    <td>....</td>
+                                    <td>....</td>
+                                    <td>....</td>
+                                </tr>
+                            {% elif loop.index-3 <= user_rank and user_rank <= loop.index+3 %}
+                                <tr {% if u.id == user.id %} class="currentUser"{%endif%}>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ u.username }}</td>
+                                    <td>{{ u.points }}</td>
+                                    <td>{{ u.streak }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
         </div>
