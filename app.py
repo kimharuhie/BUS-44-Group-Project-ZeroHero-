@@ -141,7 +141,6 @@ def travel_logging():
                     db.session.commit()
                     flash(f"Journey logged successfully! You used {total_carbon_usage:.3f} kg of C02", 'success')
 
-
         elif journey_action == "Return Home":
             return redirect(url_for('homepage'))
 
@@ -152,7 +151,13 @@ def progress_track():
     if 'userID' not in session:
         flash('Please sign in to track your progress', 'error')
         return redirect(url_for('login'))
-    
+
+    if request.method == 'POST':
+        action = request.form.get('journeyAction')
+        print(action)
+        if action == 'Return Home':
+            return redirect(url_for('homepage'))
+
     user = User.query.get(session['userID'])
 
     days = int(request.form.get('days', 7))
@@ -169,7 +174,13 @@ def leaderboard():
     if 'userID' not in session:
         flash('Please sign in to see your ranking ', 'error')
         return redirect(url_for('login'))
-    
+
+    if request.method == 'POST':
+        action = request.form.get('journeyAction')
+        print(action)
+        if action == 'Return Home':
+            return redirect(url_for('homepage'))
+
     user = User.query.get(session['userID'])
     all_users = User.query.order_by(User.points.desc()).all()
 
