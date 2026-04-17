@@ -1,3 +1,14 @@
+"""
+models.py contains all the major classes in the project, as well as the transport_type dictionary.
+Classes exported:
+    User() for all the users,
+    TypesOfTransport() for all the types of transport and their carbon emissions,
+    PointsHistory for the points history of users.
+Lists exported:
+    transport_list for all the transports and their carbon usage per km.
+"""
+
+
 """Import statements are here."""
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -35,6 +46,16 @@ transport_list = [
     ]
 
 
+"""
+User class for users.
+id: Unique identifier.
+username: Public display of user.
+email: Email attached to user.
+password: Secure phrase a user need to log in.
+points: The number of points a user has accumulated in total.
+streak: The number of consecutive days a user has logged in for.
+"""
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -44,13 +65,30 @@ class User(db.Model):
     streak = db.Column(db.Integer, default=0)
 
 
+"""
+Class for all types of transport and their carbon usage.
+id: Unique identifier.
+transport: The name of the type of transport (e.g. Car (Petrol)).
+carbon_use: The amount of carbon used per km of that type of transport.
+"""
+
 class TypesOfTransport(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     transport = db.Column(db.String(80), nullable=False)
     carbonUse = db.Column(db.Float(80), nullable=False)
+
+
+"""
+Class for displaying what points the user earned and when.
+id: Unique identifier.
+user_id: Foreign key from User(), the unique identifier of the user.
+points: The number of points earned on a particular date.
+date: The date the points were added.
+"""
 
 class PointsHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     points = db.Column(db.Integer, nullable=False)
     date = db.Column(db.DateTime, default=lambda: datetime.now())
+
