@@ -1,4 +1,8 @@
-from models import TypesOfTransport, db, car_carbon_per_km, plane_long_range_carbon_per_km
+from models import TypesOfTransport
+from models import db
+from models import car_carbon_per_km
+from models import plane_long_range_carbon_per_km
+
 
 def addTransport(transportList):
     addedCount = 0
