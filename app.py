@@ -1,9 +1,19 @@
-from datetime import datetime, timedelta, timezone
-from flask import Flask, request, url_for, render_template, redirect, session, flash
-from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from datetime import timedelta
+from flask import request
+from flask import url_for
+from flask import render_template
+from flask import redirect
+from flask import session
+from flask import flash
 from sqlalchemy.testing.pickleable import User
-from werkzeug.security import generate_password_hash, check_password_hash
-from models import transportList, User, TypesOfTransport, app, db, car_carbon_per_km, plane_long_range_carbon_per_km, PointsHistory
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
+from models import User
+from models import TypesOfTransport
+from models import app
+from models import db
+from models import PointsHistory
 from functions import addTransport, pointsCalculator
 
 with app.app_context():
