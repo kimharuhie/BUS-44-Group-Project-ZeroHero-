@@ -1,13 +1,23 @@
+"""Import statements are here."""
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+"""app and database configuration."""
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.config['SECRET_KEY']='zerohero'
 db = SQLAlchemy(app)
 
-transportList = [
+"""
+Database of how much carbon in kg is used per km of travel.
+The sources the statistics were taken from are listed below.
+For walking/cycling:
+https://www.globe.gov/explore-science/scientists-blog/archived-posts/sciblog/index.html_p=186.html
+For all other modes of transport:
+https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2022
+"""
+transport_list = [
         {'transport': 'Car (Petrol)', 'carbonUse': 0.17048},
         {'transport': 'Car (Electric)', 'carbonUse': 0.0684},
         {'transport': 'Motorbike', 'carbonUse': 0.11355},
@@ -23,8 +33,7 @@ transportList = [
         {'transport': 'Cycling', 'carbonUse': 0.00528},
         {'transport': 'Walking', 'carbonUse': 0.01212},
     ]
-car_carbon_per_km = transportList[0]["carbonUse"]
-plane_long_range_carbon_per_km = transportList[5]["carbonUse"]
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,6 +42,7 @@ class User(db.Model):
     password = db.Column(db.String(80), nullable=False)
     points = db.Column(db.Integer, default=0)
     streak = db.Column(db.Integer, default=0)
+
 
 class TypesOfTransport(db.Model):
     id = db.Column(db.Integer, primary_key=True)
