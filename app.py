@@ -86,6 +86,9 @@ def travel_logging():
                     else:
                         distance_km = distance
 
+                    if distance_km > 150000:
+                        flash('Journey distance is too long.', 'error')
+
                     transport = TypesOfTransport.query.get(transport_type)
                     if transport:
                         total_carbon_usage = distance_km * transport.carbonUse
@@ -117,23 +120,27 @@ def travel_logging():
                 total_distance = sum(seg['distance']for seg in full_journey)
                 points = points_calculator(total_carbon_usage, total_distance)
 
-                if 'journeys' not in session:
-                    session['journeys'] = []
+                if total_distance > 150000:
+                    flash('Total journey distance is too long.', 'error')
+                else:
+                    if 'journeys' not in session:
+                        session['journeys'] = []
 
-                session['journeys'].append({
-                    'transport': transport_name,
-                    'distance': distance_km,
-                    'carbonUse': total_carbon_usage,
-                    'points': points,
-                    'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                })
-                session.modified = True
-                flash(f"You earned {points} points!")
-                user.points += points
-                new_history = PointsHistory(user_id=user.id, points=points)
-                db.session.add(new_history)
-                db.session.commit()
-                flash(f"Journey logged successfully! You used {total_carbon_usage:.3f} kg of C02", 'success')
+                    session['journeys'].append({
+                        'transport': transport_name,
+                        'distance': distance_km,
+                        'carbonUse': total_carbon_usage,
+                        'points': points,
+                        'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    })
+                    session.modified = True
+                    flash(f"You earned {points} points!")
+                    user.points += points
+                    new_history = PointsHistory(user_id=user.id, points=points)
+                    db.session.add(new_history)
+                    db.session.commit()
+                    flash(f"Journey logged successfully! You used {total_carbon_usage:.3f} kg of C02", 'success')
+
 
         elif journey_action == "Return Home":
             return redirect(url_for('homepage'))
