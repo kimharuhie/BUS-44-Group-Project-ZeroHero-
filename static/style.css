@@ -1,5 +1,5 @@
 body{
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -157,12 +157,13 @@ header{
     top:0;
     left:0;
     display: flex;
-    flex:1;
+    justify-content: space-between;
     gap: 50px;
     align-items: center;
     width:100%;
     margin-bottom: 20px;
     background-color: antiquewhite;
+    box-sizing: border-box;
     font-family: sans-serif;
 }
 
@@ -186,22 +187,31 @@ header .button{
     color: forestgreen;
     text-decoration: none;
     font-size: 60px;
-    margin-left: 30px;
 }
 
 .homeWelcome{
     color: black;
     font-size: 20px;
+    margin-left: 20px;
     flex: 1;
+    text-align: center;
 }
 
 .userStats{
     display: flex;
     color:black;
-    gap: 40px;
     justify-content: center;
-    margin-left:20px;
     margin-top: 50px;
+    font-size: 25px;
+}
+
+.treeUserStats{
+    display: flex;
+    color:black;
+    gap: 40px;
+    margin-left:60px;
+    justify-content: center;
+    padding-top: 100px;
     font-size: 25px;
 }
 
@@ -211,7 +221,7 @@ main{
     flex: 1;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
+    padding-top: 80px 80px;
 }
 
 .travelWindow{
@@ -314,6 +324,12 @@ nav a.active
     text-align: center;
 }
 
+.leaderboardWindow h2{
+    text-align: center;
+    font-size: 35px;
+    font-family: sans-serif;
+}
+
 .leaderboardTable{
     width: 100%;
     border-collapse: collapse;
@@ -335,6 +351,42 @@ nav a.active
     background-color: green;
     font-weight: bold;
 }
+
+.infoWindow{
+    background-color: lightblue;
+    padding: 80px 80px;
+    padding-top: 80px;
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width:1000px;
+    justify-content: center;
+    box-shadow: 0 4px 32px gray;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.infoWindow h2{
+    text-align: center;
+    font-size: 25px;
+    font-family: sans-serif;
+}
+.infoWindow p, li{
+    text-align: left;
+    font-size: 15px;
+    font-family: sans-serif;
+}
+
+.envImg{
+    width: auto;
+    max-height: 300px;
+    object-fit: cover;
+    display: block;
+    margin: 20px auto;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
 
 
 

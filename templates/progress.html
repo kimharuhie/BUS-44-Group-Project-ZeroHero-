@@ -42,15 +42,11 @@
                 style="display: none;">
             </div>
             <canvas id="progressChart" style="width:100%;max-width:700px"></canvas>
+            <a href="{{url_for('homepage')}}" class="submitButton">Return Home</a>
         </div>
-        <form method = "POST">
-            <div class="buttonRow">
-                <button name = 'journeyAction' value = 'Return Home' class="submitButton">Return Home</button>
-            </div>
-        </form>
-
+   
     </main>
-        <nav>
+    <nav>
         <a href = "{{ url_for('travel_logging') }}">Travel Logging</a>
         <a href="{{ url_for('progress_track') }}" class="active">Track Progress</a>
         <a href="{{ url_for('leaderboard') }}">Leaderboard</a>

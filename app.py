@@ -6,6 +6,8 @@ app.py does not export any classes or functions to other modules.
 
 """Imports go here."""
 from datetime import datetime
+from datetime import timedelta
+from datetime import date
 from flask import request
 from flask import url_for
 from flask import render_template
@@ -16,6 +18,7 @@ from sqlalchemy.testing.pickleable import User
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from models import User
+from models import transport_list
 from models import TypesOfTransport
 from models import app
 from models import db
@@ -29,7 +32,7 @@ with app.app_context():
     db.create_all()
     if TypesOfTransport.query.count() == 0:
         print('No transport found')
-        add_transport()
+        add_transport(transport_list)
         print(TypesOfTransport.query.count())
 
 
@@ -55,13 +58,13 @@ def homepage():
 
     # Decide which tree to use based on user points.
     points = user.points
-    if points <= 500:
+    if points <= 50:
         tree = 'seed'
-    elif 500 < points <= 1000:
+    elif 50 < points <= 100:
         tree = 'sapling'
-    elif 1000 < points <= 2500:
+    elif 100 < points <= 250:
         tree = 'small'
-    elif 2500 < points <= 5000:
+    elif 250 < points <= 500:
         tree = 'medium'
     else:
         tree = 'large'
@@ -89,6 +92,14 @@ def travel_logging():
 
     user = User.query.get(session['userID'])
 
+    # Gets today's and yesterday's date, as well as the minimum and maximum times, for carbon usage comparisons.
+    today = date.today()
+    yesterday = today - timedelta(days=1)
+    today_start = datetime.combine(today, datetime.min.time())
+    today_end = datetime.combine(today, datetime.max.time())
+    yesterday_start = datetime.combine(yesterday, datetime.min.time())
+    yesterday_end = datetime.combine(yesterday, datetime.max.time())   
+
     total_carbon_usage = None
     transport_name = None
     distance_km = None
@@ -106,7 +117,7 @@ def travel_logging():
 
         # If the user has attempted to add a segment to their journey.
         if journey_action == 'Add':
-            # try/except block for catching any errors.
+            # Try/except block for catching any errors.
             try:
                 transport_type = request.form.get('transportType')
                 distance_str = request.form.get('distance')
@@ -125,11 +136,12 @@ def travel_logging():
                     else:
                         distance_km = distance
 
-                    # Check journey isn't super long.
+                    # Puts an upper limit on distance in km to prevent any potential overflow errors.
                     if distance_km > 150000:
                         flash('Journey distance is too long.', 'error')
 
                     transport = TypesOfTransport.query.get(transport_type)
+
                     if transport:
                         total_carbon_usage = distance_km * transport.carbonUse
                         transport_name = transport.transport
@@ -154,9 +166,9 @@ def travel_logging():
                 flash(f'Error logging journey {str(e)}', 'error')
 
         elif journey_action == 'Submit Journey':
-            # Remove journey from session (so that a new one can be created).
+            # Pop full_journey from session (so that a new one can be created).
             full_journey = session.pop('currentJourney', [])
-            # Check journey is not empty.
+            # Check full_journey is not empty.
             if not full_journey:
                 flash('No travel added!', 'error')
             else:
@@ -165,7 +177,7 @@ def travel_logging():
                 total_distance = sum(seg['distance']for seg in full_journey)
                 points = points_calculator(total_carbon_usage, total_distance)
 
-                # Check journey isn't too long.
+                # Puts an upper limit on distance in km to prevent any potential overflow errors.
                 if total_distance > 150000:
                     flash('Total journey distance is too long.', 'error')
                 else:
@@ -189,9 +201,29 @@ def travel_logging():
                     flash(f'Journey logged successfully! You used {
                     total_carbon_usage:.3f}kg of C02', 'success')
 
-        # Return to homepage if user clicks "Return Home".
-        elif journey_action == 'Return Home':
-            return redirect(url_for('homepage'))
+                    # Queries the PointsHistory db for today's and yesterday's carbon usage (within set limits)
+                    today_journeys = PointsHistory.query.filter(
+                        PointsHistory.user_id == user.id,
+                        PointsHistory.date >= today_start,
+                        PointsHistory.date <= today_end
+                    ).all()
+                    today_carbon = sum(j.carbon for j in today_journeys)
+
+                    yesterday_journeys = PointsHistory.query.filter(
+                        PointsHistory.user_id == user.id,
+                        PointsHistory.date >= yesterday_start,
+                        PointsHistory.date <= yesterday_end
+                    ).all()
+                    yesterday_carbon = sum(j.carbon for j in yesterday_journeys)
+
+                    # If there is an entry for carbon usage yesterday, today's usage gets compared.
+                    if yesterday_journeys:
+                        if today_carbon < yesterday_carbon:
+                            flash (f'You used {yesterday_carbon - today_carbon}kg less carbon than yesterday. Well Done!', 'success')
+                        elif today_carbon > yesterday_carbon:
+                            flash (f'You used {today_carbon - yesterday_carbon}kg more carbon than yesterday.', 'success')
+                        else:
+                            flash('You used the same amount of carbon as yesterday.')
 
     return render_template(
         'travelLogging.html',
@@ -219,21 +251,11 @@ def progress_track():
         flash('Please sign in to track your progress', 'error')
         return redirect(url_for('login'))
 
-    # If the user clicks "Return Home".
-    if request.method == 'POST':
-        action = request.form.get('journeyAction')
-        print(action)
-        if action == 'Return Home':
-            return redirect(url_for('homepage'))
-
     user = User.query.get(session['userID'])
     # Default range of days is 7 (but options for 15 and 30 exist).
     days = int(request.form.get('days', 7))
     # Call get_points_by_day to obtain how many points were scored on each day.
     labels, values = get_points_by_day(days, PointsHistory, user)
-    print('DAYS:', days)
-    print('LABELS:', labels)
-    print('VALUES:', values)
     # Print bar chart of points over last few days.
     return render_template(
         'progress.html',
@@ -258,12 +280,6 @@ def leaderboard():
     if 'userID' not in session:
         flash('Please sign in to see your ranking ', 'error')
         return redirect(url_for('login'))
-    # If the user clicks "Return Home".
-    if request.method == 'POST':
-        action = request.form.get('journeyAction')
-        print(action)
-        if action == 'Return Home':
-            return redirect(url_for('homepage'))
 
     user = User.query.get(session['userID'])
     all_users = User.query.order_by(User.points.desc()).all()
@@ -283,11 +299,17 @@ def leaderboard():
 
 
 """
-Function to display information page [not written yet].
+Function to display information page.
 """
-@app.route('/information', methods=['GET', 'POST'])
+@app.route("/information", methods=["GET", "POST"])
 def information():
-    return '"Information" has not yet been implemented.'
+    if 'userID' not in session:
+        flash('Please sign in to see your ranking ', 'error')
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['userID'])
+
+    return render_template('information.html', user=user)
 
 
 """
@@ -360,7 +382,7 @@ def login():
         # Raise error if too many attempts.
         if session['attempts']>=5:
             flash('Too many failed attempts!','error')
-            # Check username and password match.
+        # Check username and password match.
         if user and check_password_hash(user.password, password):
             session['userID'] = user.id
             session['attempts'] = 0
@@ -381,7 +403,7 @@ Exceptions: None.
 
 @app.route('/logout')
 def logout():
-    # Remove user from session.
+    # Pop user from session.
     session.pop('userID', None)
     session.pop('attempts', None)
     flash('You have been logged out. See you soon!')

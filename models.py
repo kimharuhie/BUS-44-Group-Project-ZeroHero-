@@ -83,6 +83,7 @@ Class for displaying what points the user earned and when.
 id: Unique identifier.
 user_id: Foreign key from User(), the unique identifier of the user.
 points: The number of points earned on a particular date.
+carbon: The carbon usage (in kg) for the specified date.
 date: The date the points were added.
 """
 
@@ -90,5 +91,6 @@ class PointsHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     points = db.Column(db.Integer, nullable=False)
+    carbon = db.Column(db.Float, nullable = False, default = 0)
     date = db.Column(db.DateTime, default=lambda: datetime.now())
 

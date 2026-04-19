@@ -48,12 +48,12 @@ def extract_car_and_plane_data() -> (float, float):
 
 """
 Function to add transport types to the database.
-Inputs: None, but requires transport_list from models to function.
+Inputs: transport_list (database containing all transport modes and their carbon usage)
 Outputs: added_count (number of transport types added).
 Exceptions: None.
 """
 
-def add_transport() -> int:
+def add_transport(transport_list) -> int:
     added_count = 0
     # For each transport type, check if already in the database, and add it if not.
     for i in transport_list:
@@ -120,7 +120,7 @@ def get_points_by_day(days: int, points_history, user) -> (list, list):
 
     points_by_day = {}
     for entry in history:
-        # Convert day into more readable format.
+        # Gets the date of the entry in y-m-d format (time is not necessary).
         day = entry.date.strftime('%Y-%m-%d')
         # Fetch points for each day in viewing range.
         points_by_day[day] =  points_by_day.get(day, 0) + entry.points

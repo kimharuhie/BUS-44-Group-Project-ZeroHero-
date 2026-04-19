@@ -3,28 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}">
-    <title>Title</title>
+    <title>Travel Logging</title>
 </head>
 
+<header>
+    <a class = "homeLogo" href="{{ url_for('homepage') }}">ZeroHero</a>
+    <div class = "homeWelcome">
+        {% if user %}
+            <span>Welcome, {{ user.username }}</span>
+            <br>
+            <span>Points: {{ user.points }}</span>
+            <span>Daily Streak: {{ user.streak }}</span>
+        {% else %}
+            <span>Sign In/Register to Start Saving the Environment</span>
+        {% endif %}
+    </div>        
+    {% if not session.userID %}
+        <a href = "{{ url_for('login') }}" class="button">Register/Sign In</a>
+    {% else %}
+        <a href = "{{ url_for('logout') }}" class="button">Log Out</a>
+    {% endif %}
+</header> 
+
 <body>
-    <div>
-        <header>
-            <a class = "homeLogo" href="{{ url_for('homepage') }}">ZeroHero</a>
-            <div class = "userStats">
-                {% if user %}
-                    <span>Welcome, {{ user.username }}</span>
-                    <span>You have {{ user.points }} points</span>
-                    <span>Daily Streak: {{ user.streak }}</span>
-                {% else %}
-                    <span>Sign/Register to see how many points you have!</span>
-                {% endif %}
-                {% if not session.userID %}
-                    <a href = "{{ url_for('login') }}" class="button">Register/Sign In</a>
-                {% else %}
-                    <a href = "{{ url_for('logout') }}" class="button">Log Out</a>
-                {% endif %}
-            </div>
-        </header>           
+    <div>       
         <main>
             <div class="travelWindow">
                 <h2>Log Your Travel</h2>
@@ -53,9 +55,9 @@
                     <button name = 'journeyAction' value = 'Add' class="submitButton">Add to Journey</button>
                     <button name ='journeyAction' value='Submit Journey' class="submitButton">Submit Full Journey</button>
                 </div>
-                <div class="buttonRow">
-                    <button name = 'journeyAction' value = 'Return Home' class="submitButton">Return Home</button>
-                </div>
+
+                <a href="{{url_for('homepage')}}" class="submitButton">Return Home</a>
+                
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
@@ -71,8 +73,8 @@
                             <span class="journeyItems"> {{seg.transport}} - {{seg.distance}}km - {{seg.carbonUseRounded}}kg C02<br></span>
                         {%endfor%}
                 {% endif %}
-                </form>
-            </div>
+                </form>                
+            </div>                
         </main>
     <nav>
         <a href = "{{ url_for('travel_logging') }}" class="active">Travel Logging</a>
