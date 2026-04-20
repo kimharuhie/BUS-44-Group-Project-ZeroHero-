@@ -89,7 +89,7 @@
                                     <td>....</td>
                                     <td>....</td>
                                 </tr>
-                            {% elif loop.index-3 <= user_rank and user_rank <= loop.index+3 %}
+                            {% elif loop.index-2 <= user_rank and user_rank <= loop.index+2 %}
                                 <tr {% if u.id == user.id %} class="currentUser"{%endif%}>
                                     <td>{{ loop.index }}</td>
                                     <td>{{ u.username }}</td>
