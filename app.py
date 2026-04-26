@@ -69,7 +69,27 @@ def homepage():
     else:
         tree = 'large'
 
-    return render_template('homepage.html',user=user, tree=tree)
+    # Check for the last day the user did not make any journeys
+    today = date.today()
+    i = 1
+    while True:
+        day = today - timedelta(days=i)
+        day_start = datetime.combine(day, datetime.min.time())
+        day_end = datetime.combine(day, datetime.max.time())
+        day_journeys = PointsHistory.query.filter(
+            PointsHistory.user_id == user.id,
+            PointsHistory.date >= day_start,
+            PointsHistory.date <= day_end
+        ).all()
+        if day_journeys:
+            i += 1
+        else:
+            break
+    # i is now the user's daily streak
+    global streak
+    streak = i
+
+    return render_template('homepage.html',user=user, tree=tree, streak=streak)
 
 
 """
@@ -136,32 +156,37 @@ def travel_logging():
                     else:
                         distance_km = distance
 
+                    # Checks that journey distance is positive
+                    if distance_km <= 0:
+                        flash('Journey distance must be greater than 0.', 'error')
+
                     # Puts an upper limit on distance in km to prevent any potential overflow errors.
-                    if distance_km > 150000:
+                    elif distance_km > 150000:
                         flash('Journey distance is too long.', 'error')
 
-                    transport = TypesOfTransport.query.get(transport_type)
+                    else:
+                        transport = TypesOfTransport.query.get(transport_type)
 
-                    if transport:
-                        total_carbon_usage = distance_km * transport.carbonUse
-                        transport_name = transport.transport
+                        if transport:
+                            total_carbon_usage = distance_km * transport.carbonUse
+                            transport_name = transport.transport
 
-                        if 'currentJourney' not in session:
-                            session['currentJourney'] = []
+                            if 'currentJourney' not in session:
+                                session['currentJourney'] = []
 
-                        # Rounding carbon usage to display to the user.
-                        total_carbon_usage_rounded = f'{total_carbon_usage:.3f}'
+                            # Rounding carbon usage to display to the user.
+                            total_carbon_usage_rounded = f'{total_carbon_usage:.3f}'
 
-                        # Append segment to current journey being created.
-                        session['currentJourney'].append({
-                            'transport': transport_name,
-                            'distance': distance_km,
-                            'carbonUse': total_carbon_usage,
-                            "carbonUseRounded": total_carbon_usage_rounded,
-                            'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                        })
-                        session.modified = True
-                        flash(f'Travel segment added: {transport_name} for {distance_km} km.')
+                            # Append segment to current journey being created.
+                            session['currentJourney'].append({
+                                'transport': transport_name,
+                                'distance': distance_km,
+                                'carbonUse': total_carbon_usage,
+                                "carbonUseRounded": total_carbon_usage_rounded,
+                                'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            })
+                            session.modified = True
+                            flash(f'Travel segment added: {transport_name} for {distance_km} km.')
             except Exception as e:
                 flash(f'Error logging journey {str(e)}', 'error')
 
@@ -232,7 +257,8 @@ def travel_logging():
         totalCarbonUsage=total_carbon_usage,
         transportName=transport_name,
         distance=distance_km,
-        currentJourney=session.get('currentJourney', [])
+        currentJourney=session.get('currentJourney', [],),
+        streak=streak
     )
 
 
@@ -262,7 +288,8 @@ def progress_track():
         user=user,
         labels=labels,
         values=values,
-        days=days
+        days=days,
+        streak=streak
     )
 
 
@@ -295,7 +322,8 @@ def leaderboard():
         'leaderboard.html',
         user=user,
         all_users=all_users,
-        user_rank=user_rank)
+        user_rank=user_rank,
+        streak=streak)
 
 
 """
@@ -309,7 +337,7 @@ def information():
     
     user = User.query.get(session['userID'])
 
-    return render_template('information.html', user=user)
+    return render_template('information.html', user=user, streak=streak)
 
 
 """
@@ -412,3 +440,4 @@ def logout():
 """Test code to run in debug mode."""
 if __name__ == '__main__':
     app.run(debug=True, port=5555)
+
