@@ -13,7 +13,7 @@
             {% if user %}
                 <span>Welcome, {{ user.username }}</span>
                 <br>
-                <span>Points: {{ user.points }}</span>
+                <span>Points: {{ user.points }}</span><br>
                 <span>Daily Streak: {{ user.streak }}</span>
             {% else %}
                 <span>Sign In/Register to Start Saving the Environment</span>
@@ -31,12 +31,12 @@
 
     <body>
         <main>
-            <div>
-                <img src=" {{ url_for('static', filename='images/environment info.png') }}" width="562" height="400" class="envImg">
-            </div>
             <div class="infoWindow">
                 <h2>Our Environment</h2>
                 <p>According to UNESCO, "the term 'environment' refers to the surrounding conditions in which living organisms exist, encompassing both natural and human-made elements". Our environment is an amazing thing, but human activity is harming it more now than ever before. With the rise of AI usage, emissions are at an all-time high. <br><br> With this app, you can help play your part in saving the environment. Below are some general tips and tricks, and some links to other useful online resources for you. Saving the environment should be fun and rewarding, not a chore.</p>
+                <div>
+                    <img src=" {{ url_for('static', filename='images/environment info.png') }}" width="562" height="400" class="envImg">
+                </div>
                 <h2>Tips and Tricks</h2>
                 <p>General tips and tricks to help save our environment:</p>
                 <ul>
