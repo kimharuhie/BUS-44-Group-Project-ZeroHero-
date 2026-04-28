@@ -69,27 +69,26 @@ def homepage():
     else:
         tree = 'large'
 
-    # Check for the last day the user did not make any journeys
+    # Check if journey was made yesterday or today; if not, reset user streak
     today = date.today()
-    i = 1
-    while True:
-        day = today - timedelta(days=i)
-        day_start = datetime.combine(day, datetime.min.time())
-        day_end = datetime.combine(day, datetime.max.time())
-        day_journeys = PointsHistory.query.filter(
-            PointsHistory.user_id == user.id,
-            PointsHistory.date >= day_start,
-            PointsHistory.date <= day_end
-        ).all()
-        if day_journeys:
-            i += 1
-        else:
-            break
-    # i is now the user's daily streak
-    global streak
-    streak = i
-
-    return render_template('homepage.html',user=user, tree=tree, streak=streak)
+    yesterday = today - timedelta(days=1)
+    today_start = datetime.combine(today, datetime.min.time())
+    today_end = datetime.combine(today, datetime.max.time())
+    yesterday_start = datetime.combine(yesterday, datetime.min.time())
+    yesterday_end = datetime.combine(yesterday, datetime.max.time())
+    today_journeys = PointsHistory.query.filter(
+        PointsHistory.user_id == user.id,
+        PointsHistory.date >= today_start,
+        PointsHistory.date <= today_end
+    ).all()
+    yesterday_journeys = PointsHistory.query.filter(
+        PointsHistory.user_id == user.id,
+        PointsHistory.date >= yesterday_start,
+        PointsHistory.date <= yesterday_end
+    ).all()
+    if not today_journeys and not yesterday_journeys:
+        user.streak = 0
+    return render_template('homepage.html', user=user, tree=tree)
 
 
 """
@@ -220,6 +219,14 @@ def travel_logging():
                     session.modified = True
                     flash(f'You earned {points} points!')
                     user.points += points
+                    # Check if a journey has already been made today, and increase daily streak if not
+                    today_journeys = PointsHistory.query.filter(
+                        PointsHistory.user_id == user.id,
+                        PointsHistory.date >= today_start,
+                        PointsHistory.date <= today_end
+                    ).all()
+                    if not today_journeys:
+                        user.streak += 1
                     new_history = PointsHistory(user_id=user.id, points=points)
                     db.session.add(new_history)
                     db.session.commit()
@@ -232,6 +239,8 @@ def travel_logging():
                         PointsHistory.date >= today_start,
                         PointsHistory.date <= today_end
                     ).all()
+                    if not today_journeys:
+                        user.streak += 1
                     today_carbon = sum(j.carbon for j in today_journeys)
 
                     yesterday_journeys = PointsHistory.query.filter(
@@ -257,8 +266,7 @@ def travel_logging():
         totalCarbonUsage=total_carbon_usage,
         transportName=transport_name,
         distance=distance_km,
-        currentJourney=session.get('currentJourney', [],),
-        streak=streak
+        currentJourney=session.get('currentJourney', [])
     )
 
 
@@ -288,8 +296,7 @@ def progress_track():
         user=user,
         labels=labels,
         values=values,
-        days=days,
-        streak=streak
+        days=days
     )
 
 
@@ -322,8 +329,7 @@ def leaderboard():
         'leaderboard.html',
         user=user,
         all_users=all_users,
-        user_rank=user_rank,
-        streak=streak)
+        user_rank=user_rank)
 
 
 """
@@ -337,7 +343,7 @@ def information():
     
     user = User.query.get(session['userID'])
 
-    return render_template('information.html', user=user, streak=streak)
+    return render_template('information.html', user=user)
 
 
 """
@@ -440,4 +446,5 @@ def logout():
 """Test code to run in debug mode."""
 if __name__ == '__main__':
     app.run(debug=True, port=5555)
+
 
