@@ -36,7 +36,7 @@
             {%if user%}
                 <div class="treeUserStats">
                     <span>Points: {{ user.points }}</span>
-                    <span>Daily Streak: {{ streak }}</span>
+                    <span>Daily Streak: {{ user.streak }}</span>
                 </div>
                 <img src="{{url_for('static', filename='images/' + tree + '.png')}}">
             {%else%}
